@@ -133,7 +133,17 @@ Array2D.prototype.resize = function(nx, ny, yEnd, xEnd) {
 };
 */
 
-Array2D.prototype.resize = function(x, y, nx, ny) {
+Array2D.prototype.resize = function(_x, _y, x_, y_) {
+	var nx = this.x + _x + x_;
+	var ny = this.y + _y + y_;
+
+	if((nx < 1) || (ny < 1))
+	{
+		console.log("Resize Error: overlapping contractions");
+		return;
+	}
+
+	var array = new Array2D(nx, ny);
 
 };
 
@@ -142,5 +152,9 @@ Array2D.prototype.crop = function(x, y, w, h) {
 };
 
 Array2D.prototype.rotate = function(x, y) {
+
+};
+
+Array2D.prototype.log = function() {
 
 };

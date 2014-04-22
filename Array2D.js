@@ -12,8 +12,13 @@ var Array2D = function() {
 		this.x = arguments[0];
 		this.y = arguments[1];
 
+		for(var y = 0; y < this.y; y++)
+		{
+			this[y] = {};
+		}
+
 		this.forEach(function(v, x, y, a) {
-			a[x][y] = this.default_value;
+			a[x][y] = 0;
 		});
 	}
 	else if((arguments.length === 1) && (arguments[0] instanceof Array2D))
@@ -22,6 +27,11 @@ var Array2D = function() {
 		var old = arguments[0];
 		this.x = old.x;
 		this.y = old.y;
+
+		for(var y = 0; y < this.y; y++)
+		{
+			this[y] = {};
+		}
 
 		this.forEach(function(v, x, y, a) {
 			a[x][y] = old[x][y];
@@ -96,6 +106,11 @@ Array2D.prototype.col = function(x) {
 	return array;
 };
 
+Array2D.prototype.setRow = function(array) {
+	
+};
+
+
 /*
 Array2D.prototype.resize = function(nx, ny, yEnd, xEnd) {
 	//pre-flight checks
@@ -157,4 +172,14 @@ Array2D.prototype.rotate = function(x, y) {
 
 Array2D.prototype.log = function() {
 
+	console.log("  _____");
+	for(var y = 0; y < this.y; y++)
+	{
+		var line = y + "| ";
+		var row = this.row(y);
+		row.forEach(function(v, i, a) {
+			line += v + " ";
+		});
+		console.log(line);
+	}
 };

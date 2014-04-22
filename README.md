@@ -9,16 +9,35 @@ Constructors
 
 array2D(x, y)
 
-array2D(<array2D>)
+> Creates a new array2D object, with dimensions (x, y)
+
+array2D(&lt;array2D&gt;)
+
+> Copy constructor: clones the contents of the given array2D object
 
 
 API Function
 ------------
 
-###Row and Column Operations
+####Row and Column Operations
+
 
 .row(y)
-> returns the row as an Array
 
 .col(x)
-> returns the column as an Array
+
+> Returns the selected row or column as an Array
+
+
+.setRow(y, array)
+
+.setCol(x, array)
+
+> Sets the selected row or column to the contents of the given array (existing data will be overwritten)
+
+
+.spliceRow(y, array)
+
+.spliceCol(x, array)
+
+> Creates a new row or column at the requested index, and fills it with the contents of the given array

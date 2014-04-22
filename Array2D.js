@@ -107,6 +107,10 @@ Array2D.prototype.col = function(x) {
 };
 
 Array2D.prototype.setRow = function(array) {
+
+};
+
+Array2D.prototype.setCol = function(array) {
 	
 };
 

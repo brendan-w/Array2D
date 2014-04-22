@@ -114,6 +114,14 @@ Array2D.prototype.setCol = function(array) {
 	
 };
 
+Array2D.prototype.spliceRow = function(array) {
+
+};
+
+Array2D.prototype.spliceCol = function(array) {
+	
+};
+
 
 /*
 Array2D.prototype.resize = function(nx, ny, yEnd, xEnd) {

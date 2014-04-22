@@ -16,8 +16,21 @@ array2D(&lt;array2D&gt;)
 > Copy constructor: clones the contents of the given array2D object
 
 
-API Function
+API Functions
 ------------
+
+
+####Traversal
+
+.forEach(callback)
+
+.forRow(y, callback)
+
+.forCol(x, callback)
+
+.forGroup(x, y, width, height, callback)
+
+
 
 ####Row and Column Operations
 
@@ -41,3 +54,21 @@ API Function
 .spliceCol(x, array)
 
 > Creates a new row or column at the requested index, and fills it with the contents of the given array
+
+
+
+####2D Operations
+
+.resize(right, bottom, left, top)
+
+.crop(x, y, width, height)
+
+.rotate(clockwise)
+
+
+
+####Debug
+
+.log()
+
+> Prints the array to the console

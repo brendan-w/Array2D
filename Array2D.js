@@ -6,20 +6,38 @@
  */
 var Array2D = function() {
 
+	/*
+	 * Properties / Settings
+	 */
+
+	this.default_value = 0;
+
+	/*
+	 * Private Functions
+	 */
+
+	var _this = this;
+
+	var init = function() {
+		for(var x = 0; x < _this.x; x++)
+		{
+			_this[x] = {};
+			for(var y = 0; y < _this.y; y++)
+			{
+				_this[x][y] = _this.default_value;
+			}
+		}
+	};
+
+
 	if((arguments.length === 2) && (!isNaN(arguments[0])) && (!isNaN(arguments[0])))
 	{
 		//normal Array2D constructor
 		this.x = arguments[0];
 		this.y = arguments[1];
 
-		for(var y = 0; y < this.y; y++)
-		{
-			this[y] = {};
-		}
+		init();
 
-		this.forEach(function(v, x, y, a) {
-			a[x][y] = 0;
-		});
 	}
 	else if((arguments.length === 1) && (arguments[0] instanceof Array2D))
 	{
@@ -28,10 +46,7 @@ var Array2D = function() {
 		this.x = old.x;
 		this.y = old.y;
 
-		for(var y = 0; y < this.y; y++)
-		{
-			this[y] = {};
-		}
+		init();
 
 		this.forEach(function(v, x, y, a) {
 			a[x][y] = old[x][y];
@@ -42,13 +57,6 @@ var Array2D = function() {
 		console.log("Invalid arguments for an Array2D constructor");
 	}
 };
-
-
-/*
- * Properties / Settings
- */
-
-Array2D.default_value = 0;
 
 
 
@@ -106,11 +114,11 @@ Array2D.prototype.col = function(x) {
 	return array;
 };
 
-Array2D.prototype.setRow = function(array) {
+Array2D.prototype.setRow = function(y, array) {
 
 };
 
-Array2D.prototype.setCol = function(array) {
+Array2D.prototype.setCol = function(x, array) {
 	
 };
 
@@ -184,7 +192,13 @@ Array2D.prototype.rotate = function(x, y) {
 
 Array2D.prototype.log = function() {
 
-	console.log("  _____");
+	var header = "  _";
+	for(var i = 0; i < this.x; i++)
+	{
+		header += "__";
+	}
+
+	console.log(header);
 	for(var y = 0; y < this.y; y++)
 	{
 		var line = y + "| ";

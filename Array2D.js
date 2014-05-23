@@ -86,7 +86,7 @@ Array2D.prototype.build = function(nx, ny, def) {
 };
 
 Array2D.prototype.inBounds = function(x, y) {
-	return (x > 0) && (x < this.x) && (y > 0) && (y < this.y);
+	return (x >= 0) && (x < this.x) && (y >= 0) && (y < this.y);
 };
 
 Array2D.prototype.forEach = function(callback) {

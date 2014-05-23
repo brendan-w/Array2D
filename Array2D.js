@@ -166,44 +166,6 @@ Array2D.prototype.spliceCol = function(array) {
 	
 };
 
-
-/*
-Array2D.prototype.resize = function(nx, ny, yEnd, xEnd) {
-	//pre-flight checks
-	if((arguments.length !== 4) || isNaN(nx) || isNaN(ny))
-	{
-		console.log("Invalid arguments for resizing an Array2D");
-		return this;
-	}
-
-	//create the new array with the new dimensions
-	var array = new Array2D(nx, ny);
-
-	//fill the new array with the old values from the source array
-	for(var x = 0; x < this.x; x++)
-	{
-		for(var y = 0; y < this.y; y++)
-		{
-			//destination coordinates
-			var dx = x;
-			var dy = y;
-			if(!xEnd) { dx = nx - this.x + x; }
-			if(!yEnd) { dy = ny - this.y + y; }
-
-			if((dx >= 0) && (dy >= 0)) //if it doesn't fall off the lower bounds
-			{
-				if((dx < nx) && (dy < ny)) //if it doesn't fall off the upper bounds
-				{
-					array[dx][dy] = this[x][y];
-				}
-			}
-		}
-	}
-
-	return array;	
-};
-*/
-
 Array2D.prototype.resize = function(_x, _y, x_, y_) {
 
 	_x = (_x === undefined) || (isNaN(_x)) ? 0 : _x;
@@ -225,7 +187,7 @@ Array2D.prototype.resize = function(_x, _y, x_, y_) {
 		//save a copy of this array, and rebuild for new dimensions
 		var existingData = new Array2D(this);
 		this.build(nx, ny, this.default_value);
-		var _this = this;
+		var _this = this; //because of callback function below
 
 		existingData.forEach(function(v, x, y) {
 			//destination coordinates
@@ -241,10 +203,27 @@ Array2D.prototype.resize = function(_x, _y, x_, y_) {
 };
 
 Array2D.prototype.crop = function(x, y, w, h) {
+	for(var i = 0; i < arguments.length; i++)
+	{
+		if((arguments[i] === undefined) || isNaN(arguments[i]))
+		{
+			console.log("Crop Error: argument " + (i+1) + " is not a number");
+			return;
+		}
+	}
 
+	if(this.inBounds(x, y) && this.inBounds(x+w-1, y+h-1))
+	{
+		this.resize((x+w)-this.x, (y+h)-this.y, -x, -y);
+	}
+	else
+	{
+		console.log("Crop Error: The requested area goes out of bounds");
+		return;
+	}
 };
 
-Array2D.prototype.rotate = function(x, y) {
+Array2D.prototype.rotate = function(clockwise) {
 
 };
 

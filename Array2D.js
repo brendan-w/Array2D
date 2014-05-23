@@ -31,6 +31,7 @@ var Array2D = function() {
 					var old = arguments[0];
 					_this.x = old.x;
 					_this.y = old.y;
+					_this.default_value = old.default_value;
 
 					init();
 
@@ -50,14 +51,21 @@ var Array2D = function() {
 				}
 				break;
 
+			case 3: //normal Array2D constructor
+				if(!isNaN(arguments[0]) && !isNaN(arguments[1]))
+				{
+					_this.x = arguments[0];
+					_this.y = arguments[1];
+					_this.default_value = arguments[2];
+
+					init();
+				}
+				break;
+
 			default:
 				console.log("Constructor Error: Invalid arguments for an Array2D constructor");
 		}
 	};
-
-	/*
-	 * Private Functions
-	 */
 
 	var init = function() {
 		for(var x = 0; x < _this.x; x++)
@@ -83,7 +91,7 @@ Array2D.prototype.forEach = function(callback) {
 	if((callback === undefined) || !(callback instanceof Function))
 	{
 		console.log("forEach Error: must supply callback function as a parameter");
-		return;
+		return this;
 	}
 
 	for(var x = 0; x < this.x; x++)
@@ -96,12 +104,23 @@ Array2D.prototype.forEach = function(callback) {
 };
 
 
+Array2D.prototype.setAll = function(value) {
+	if(value === undefined)
+	{
+		value = this.default_value;
+	}
+
+	this.forEach(function(v, x, y) {
+		this[x][y] = value;
+	});
+};
+
 
 Array2D.prototype.row = function(y) {
-	if((y === undefined) || isNaN(y) || (y > (this.y - 1)))
+	if(isNaN(y) || (y < 0) || (y > (this.y - 1)))
 	{
 		console.log("Invalid argument for row()");
-		return;
+		return this;
 	}
 
 	var array = new Array();
@@ -115,10 +134,10 @@ Array2D.prototype.row = function(y) {
 
 
 Array2D.prototype.col = function(x) {
-	if((x === undefined) || isNaN(x) || (x > (this.x - 1)))
+	if(isNaN(x) || (x < 0) || (x > (this.x - 1)))
 	{
 		console.log("Invalid argument for col()");
-		return;
+		return this;
 	}
 
 	var array = new Array();
@@ -152,7 +171,7 @@ Array2D.prototype.resize = function(nx, ny, yEnd, xEnd) {
 	if((arguments.length !== 4) || isNaN(nx) || isNaN(ny))
 	{
 		console.log("Invalid arguments for resizing an Array2D");
-		return;
+		return this;
 	}
 
 	//create the new array with the new dimensions
@@ -187,14 +206,14 @@ Array2D.prototype.resize = function(_x, _y, x_, y_) {
 	if(arguments.length !== 4)
 	{
 		console.log("Resize Error: Invalid arguments");
-		return;
+		return this;
 	}
 
 	arguments.forEach(function(v, i) {
 		if(isNaN(v))
 		{
 			console.log("Resize Error: argument " + (i+1) + " is not a number");
-			return;
+			return this;
 		}
 	});
 
@@ -204,11 +223,18 @@ Array2D.prototype.resize = function(_x, _y, x_, y_) {
 	if((nx < 1) || (ny < 1))
 	{
 		console.log("Resize Error: contraction not possible, will result in zero sized array");
-		return;
+		return this;
 	}
 
 	var array = new Array2D(nx, ny);
 
+	this.forEach(function(v, x, y) {
+		//destination coordinates
+		var dx = x;
+		var dy = y;
+	});
+
+	return array;
 };
 
 Array2D.prototype.crop = function(x, y, w, h) {
@@ -219,7 +245,12 @@ Array2D.prototype.rotate = function(x, y) {
 
 };
 
-Array2D.prototype.log = function() {
+Array2D.prototype.log = function(renderCallback) {
+
+	if(renderCallback === undefined)
+	{
+		renderCallback = function(data) { return data; }; //default render function
+	}
 
 	function genChars(c, l)
 	{
@@ -245,6 +276,7 @@ Array2D.prototype.log = function() {
 		return str;
 	}
 
+	var maxYWidth = String(this.y - 1).length;
 	var maxElementWidth = 0;
 	this.forEach(function(v) {
 		var width = String(v).length;
@@ -254,9 +286,6 @@ Array2D.prototype.log = function() {
 		}
 	});
 
-	var maxYWidth = String(this.y - 1).length;
-
-
 	var header = genChars(" ", maxYWidth + 1) + genChars("_", (maxElementWidth + 1) * this.x) + "_";
 	console.log(header);
 
@@ -265,7 +294,7 @@ Array2D.prototype.log = function() {
 		var line = padLeft(String(y), maxYWidth) + "| ";
 		for(var x = 0; x < this.x; x++)
 		{
-			line += padRight(String(this[x][y]), maxElementWidth + 1);
+			line += padRight(String(renderCallback(this[x][y])), maxElementWidth + 1);
 		}
 		console.log(line);
 	}

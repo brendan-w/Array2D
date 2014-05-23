@@ -26,14 +26,11 @@ var Array2D = function() {
 		switch(arguments.length)
 		{
 			case 1: //copy constructor
-				if(arg[0] instanceof Array2D)
+				if(arguments[0] instanceof Array2D)
 				{
 					var old = arguments[0];
-					_this.x = old.x;
-					_this.y = old.y;
-					_this.default_value = old.default_value;
 
-					init();
+					_this.build(old.x, old.y, old.default_value);
 
 					_this.forEach(function(v, x, y, a) {
 						a[x][y] = old[x][y];
@@ -44,37 +41,19 @@ var Array2D = function() {
 			case 2: //normal Array2D constructor
 				if(!isNaN(arguments[0]) && !isNaN(arguments[1]))
 				{
-					_this.x = arguments[0];
-					_this.y = arguments[1];
-
-					init();
+					_this.build(arguments[0], arguments[1], 0);
 				}
 				break;
 
-			case 3: //normal Array2D constructor
+			case 3: //normal Array2D constructor, with default value parameter
 				if(!isNaN(arguments[0]) && !isNaN(arguments[1]))
 				{
-					_this.x = arguments[0];
-					_this.y = arguments[1];
-					_this.default_value = arguments[2];
-
-					init();
+					_this.build.apply(_this, arguments);
 				}
 				break;
 
 			default:
 				console.log("Constructor Error: Invalid arguments for an Array2D constructor");
-		}
-	};
-
-	var init = function() {
-		for(var x = 0; x < _this.x; x++)
-		{
-			_this[x] = {};
-			for(var y = 0; y < _this.y; y++)
-			{
-				_this[x][y] = _this.default_value;
-			}
 		}
 	};
 
@@ -86,6 +65,29 @@ var Array2D = function() {
 /*
  * API functions
  */
+
+Array2D.prototype.build = function(nx, ny, def) {
+
+	this.x = nx;
+	this.y = ny;
+	if(def !== undefined)
+	{
+		this.default_value = def;
+	}
+
+	for(var x = 0; x < this.x; x++)
+	{
+		this[x] = {};
+		for(var y = 0; y < this.y; y++)
+		{
+			this[x][y] = this.default_value;
+		}
+	}
+};
+
+Array2D.prototype.inBounds = function(x, y) {
+	return (x > 0) && (x < this.x) && (y > 0) && (y < this.y);
+};
 
 Array2D.prototype.forEach = function(callback) {
 	if((callback === undefined) || !(callback instanceof Function))
@@ -203,20 +205,13 @@ Array2D.prototype.resize = function(nx, ny, yEnd, xEnd) {
 */
 
 Array2D.prototype.resize = function(_x, _y, x_, y_) {
-	if(arguments.length !== 4)
-	{
-		console.log("Resize Error: Invalid arguments");
-		return this;
-	}
 
-	arguments.forEach(function(v, i) {
-		if(isNaN(v))
-		{
-			console.log("Resize Error: argument " + (i+1) + " is not a number");
-			return this;
-		}
-	});
+	_x = (_x === undefined) || (isNaN(_x)) ? 0 : _x;
+	_y = (_y === undefined) || (isNaN(_y)) ? 0 : _y;
+	x_ = (x_ === undefined) || (isNaN(x_)) ? 0 : x_;
+	y_ = (y_ === undefined) || (isNaN(y_)) ? 0 : y_;
 
+	//compute new dimensions
 	var nx = this.x + _x + x_;
 	var ny = this.y + _y + y_;
 
@@ -225,16 +220,24 @@ Array2D.prototype.resize = function(_x, _y, x_, y_) {
 		console.log("Resize Error: contraction not possible, will result in zero sized array");
 		return this;
 	}
+	else if((nx !== 0) && (ny !== 0)) //if it requires any changing
+	{
+		//save a copy of this array, and rebuild for new dimensions
+		var existingData = new Array2D(this);
+		this.build(nx, ny, this.default_value);
+		var _this = this;
 
-	var array = new Array2D(nx, ny);
+		existingData.forEach(function(v, x, y) {
+			//destination coordinates
+			var dx = x + x_;
+			var dy = y + y_;
+			if(_this.inBounds(dx, dy))
+			{
+				_this[dx][dy] = existingData[x][y];
+			}
+		});
 
-	this.forEach(function(v, x, y) {
-		//destination coordinates
-		var dx = x;
-		var dy = y;
-	});
-
-	return array;
+	}
 };
 
 Array2D.prototype.crop = function(x, y, w, h) {

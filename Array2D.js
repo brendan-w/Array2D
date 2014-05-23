@@ -10,13 +10,43 @@ var Array2D = function() {
 	 * Properties / Settings
 	 */
 
+	var _this = this;
 	this.default_value = 0;
+
+	/*
+	 * Constructor
+	 */
+	var construct = function(args) {
+		if((args.length === 2) && (!isNaN(args[0])) && (!isNaN(args[0])))
+		{
+			//normal Array2D constructor
+			_this.x = args[0];
+			_this.y = args[1];
+
+			init();
+		}
+		else if((args.length === 1) && (args[0] instanceof Array2D))
+		{
+			//copy constructor
+			var old = args[0];
+			_this.x = old.x;
+			_this.y = old.y;
+
+			init();
+
+			_this.forEach(function(v, x, y, a) {
+				a[x][y] = old[x][y];
+			});
+		}
+		else
+		{
+			console.log("Invalid arguments for an Array2D constructor");
+		}
+	};
 
 	/*
 	 * Private Functions
 	 */
-
-	var _this = this;
 
 	var init = function() {
 		for(var x = 0; x < _this.x; x++)
@@ -29,35 +59,9 @@ var Array2D = function() {
 		}
 	};
 
-
-	if((arguments.length === 2) && (!isNaN(arguments[0])) && (!isNaN(arguments[0])))
-	{
-		//normal Array2D constructor
-		this.x = arguments[0];
-		this.y = arguments[1];
-
-		init();
-
-	}
-	else if((arguments.length === 1) && (arguments[0] instanceof Array2D))
-	{
-		//copy constructor
-		var old = arguments[0];
-		this.x = old.x;
-		this.y = old.y;
-
-		init();
-
-		this.forEach(function(v, x, y, a) {
-			a[x][y] = old[x][y];
-		});
-	}
-	else
-	{
-		console.log("Invalid arguments for an Array2D constructor");
-	}
+	//Start
+	construct(arguments);
 };
-
 
 
 /*

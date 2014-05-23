@@ -22,13 +22,13 @@ var Array2D = function() {
 	/*
 	 * Constructor
 	 */
-	var construct = function(args) {
-		switch(args.length)
+	var construct = function() {
+		switch(arguments.length)
 		{
 			case 1: //copy constructor
 				if(arg[0] instanceof Array2D)
 				{
-					var old = args[0];
+					var old = arguments[0];
 					_this.x = old.x;
 					_this.y = old.y;
 
@@ -41,10 +41,10 @@ var Array2D = function() {
 				break;
 
 			case 2: //normal Array2D constructor
-				if(!isNaN(args[0]) && !isNaN(args[1]))
+				if(!isNaN(arguments[0]) && !isNaN(arguments[1]))
 				{
-					_this.x = args[0];
-					_this.y = args[1];
+					_this.x = arguments[0];
+					_this.y = arguments[1];
 
 					init();
 				}
@@ -71,7 +71,7 @@ var Array2D = function() {
 	};
 
 	//Start
-	construct(arguments);
+	construct.apply(this, arguments);
 };
 
 
@@ -80,9 +80,9 @@ var Array2D = function() {
  */
 
 Array2D.prototype.forEach = function(callback) {
-	if(callback === undefined)
+	if((callback === undefined) || !(callback instanceof Function))
 	{
-		console.log("Invalid arguments for iterating an Array2D");
+		console.log("forEach Error: must supply callback function as a parameter");
 		return;
 	}
 
@@ -220,20 +220,53 @@ Array2D.prototype.rotate = function(x, y) {
 };
 
 Array2D.prototype.log = function() {
-	var header = "  _";
-	for(var i = 0; i < this.x; i++)
+
+	function genChars(c, l)
 	{
-		header += "__";
+		var str = "";
+		for(var i = 0; i < l; i++)
+		{
+			str += c;
+		}
+		return str;
 	}
 
+	function padLeft(str, len)
+	{
+		var space = genChars(" ", len - str.length);
+		str = space + str;
+		return str;
+	}
+
+	function padRight(str, len)
+	{
+		var space = genChars(" ", len - str.length);
+		str = str + space;
+		return str;
+	}
+
+	var maxElementWidth = 0;
+	this.forEach(function(v) {
+		var width = String(v).length;
+		if(width > maxElementWidth)
+		{
+			maxElementWidth = width;
+		}
+	});
+
+	var maxYWidth = String(this.y - 1).length;
+
+
+	var header = genChars(" ", maxYWidth + 1) + genChars("_", (maxElementWidth + 1) * this.x) + "_";
 	console.log(header);
+
 	for(var y = 0; y < this.y; y++)
 	{
-		var line = y + "| ";
-		var row = this.row(y);
-		row.forEach(function(v, i, a) {
-			line += v + " ";
-		});
+		var line = padLeft(String(y), maxYWidth) + "| ";
+		for(var x = 0; x < this.x; x++)
+		{
+			line += padRight(String(this[x][y]), maxElementWidth + 1);
+		}
 		console.log(line);
 	}
 };

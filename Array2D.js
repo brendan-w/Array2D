@@ -1,3 +1,9 @@
+//Written by Brendan Whitfield
+
+
+"use strict";
+
+
 /*
  * Array2D Constructor
  * 
@@ -17,30 +23,35 @@ var Array2D = function() {
 	 * Constructor
 	 */
 	var construct = function(args) {
-		if((args.length === 2) && (!isNaN(args[0])) && (!isNaN(args[0])))
+		switch(args.length)
 		{
-			//normal Array2D constructor
-			_this.x = args[0];
-			_this.y = args[1];
+			case 1: //copy constructor
+				if(arg[0] instanceof Array2D)
+				{
+					var old = args[0];
+					_this.x = old.x;
+					_this.y = old.y;
 
-			init();
-		}
-		else if((args.length === 1) && (args[0] instanceof Array2D))
-		{
-			//copy constructor
-			var old = args[0];
-			_this.x = old.x;
-			_this.y = old.y;
+					init();
 
-			init();
+					_this.forEach(function(v, x, y, a) {
+						a[x][y] = old[x][y];
+					});
+				}
+				break;
 
-			_this.forEach(function(v, x, y, a) {
-				a[x][y] = old[x][y];
-			});
-		}
-		else
-		{
-			console.log("Invalid arguments for an Array2D constructor");
+			case 2: //normal Array2D constructor
+				if(!isNaN(args[0]) && !isNaN(args[1]))
+				{
+					_this.x = args[0];
+					_this.y = args[1];
+
+					init();
+				}
+				break;
+
+			default:
+				console.log("Constructor Error: Invalid arguments for an Array2D constructor");
 		}
 	};
 
@@ -173,12 +184,26 @@ Array2D.prototype.resize = function(nx, ny, yEnd, xEnd) {
 */
 
 Array2D.prototype.resize = function(_x, _y, x_, y_) {
+	if(arguments.length !== 4)
+	{
+		console.log("Resize Error: Invalid arguments");
+		return;
+	}
+
+	arguments.forEach(function(v, i) {
+		if(isNaN(v))
+		{
+			console.log("Resize Error: argument " + (i+1) + " is not a number");
+			return;
+		}
+	});
+
 	var nx = this.x + _x + x_;
 	var ny = this.y + _y + y_;
 
 	if((nx < 1) || (ny < 1))
 	{
-		console.log("Resize Error: overlapping contractions");
+		console.log("Resize Error: contraction not possible, will result in zero sized array");
 		return;
 	}
 
@@ -195,7 +220,6 @@ Array2D.prototype.rotate = function(x, y) {
 };
 
 Array2D.prototype.log = function() {
-
 	var header = "  _";
 	for(var i = 0; i < this.x; i++)
 	{

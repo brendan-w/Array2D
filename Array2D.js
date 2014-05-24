@@ -23,37 +23,32 @@ var Array2D = function() {
 	 * Constructor
 	 */
 	var construct = function() {
+		this.__assert__.totalArgs("constructor", [1,2,3], arguments);
+
 		switch(arguments.length)
 		{
 			case 1: //copy constructor
-				if(arguments[0] instanceof Array2D)
-				{
-					var old = arguments[0];
+				_this.__assert__.isArray2D("constructor", arguments[0]);
 
-					_this.__build__(old.x, old.y, old.default_value);
+				var old = arguments[0];
+				_this.__build__(old.x, old.y, old.default_value);
 
-					_this.forEach(function(v, x, y, a) {
-						a[x][y] = old[x][y];
-					});
-				}
+				_this.forEach(function(v, x, y, a) {
+					a[x][y] = old[x][y];
+				});
 				break;
 
 			case 2: //normal Array2D constructor
-				if(!isNaN(arguments[0]) && !isNaN(arguments[1]))
-				{
-					_this.__build__(arguments[0], arguments[1], 0);
-				}
+				_this.__assert__.areNumbers("constructor", arguments[0], arguments[1]);
+				_this.__assert__.validDimensions("constructor", arguments[0], arguments[1]);
+				_this.__build__(arguments[0], arguments[1], 0);
 				break;
 
 			case 3: //normal Array2D constructor, with default value parameter
-				if(!isNaN(arguments[0]) && !isNaN(arguments[1]))
-				{
-					_this.__build__.apply(_this, arguments);
-				}
+				_this.__assert__.areNumbers("constructor", arguments[0], arguments[1]);
+				_this.__assert__.validDimensions("constructor", arguments[0], arguments[1]);
+				_this.__build__.apply(_this, arguments);
 				break;
-
-			default:
-				console.log("Constructor Error: Invalid arguments for an Array2D constructor");
 		}
 	};
 
@@ -108,6 +103,20 @@ Array2D.prototype.__assert__ = {
 				}
 				break;
 
+		}
+	},
+
+	validDimensions:function(sourceName, x, y) {
+		if((x <= 0) || (y <= 0))
+		{
+			throw "Array2D Error [" + sourceName + "]: can't create array with dimensions (" + x + ", " + y + ")";
+		}
+	},
+
+	isArray2D:function(sourceName, obj) {
+		if(!(obj instanceof Array2D))
+		{
+			throw "Array2D Error [" + sourceName + "]: parameter must be an Array2D object";
 		}
 	}
 };
@@ -228,6 +237,33 @@ Array2D.prototype.setGroup = function(x, y, w, h, value) {
 	}
 };
 
+Array2D.prototype.row = function(y) {
+	this.__assert__.totalArgs("row", [1], arguments);
+	this.__assert__.areNumbers("row", y);
+	this.__assert__.inBounds("row", 0, y);
+
+	var array = new Array();
+	for(var x = 0; x < this.x; x++)
+	{
+		array[x] = this[x][y];
+	}
+	return array;
+};
+
+
+
+Array2D.prototype.col = function(x) {
+	this.__assert__.totalArgs("col", [1], arguments);
+	this.__assert__.areNumbers("col", x);
+	this.__assert__.inBounds("col", x, 0);
+
+	var array = new Array();
+	for(var y = 0; y < this.y; y++)
+	{
+		array[y] = this[x][y];
+	}
+	return array;
+};
 
 //setRow(y)
 //setRow(y, value)
@@ -260,33 +296,6 @@ Array2D.prototype.setCol = function(x, value) {
 };
 
 
-Array2D.prototype.row = function(y) {
-	this.__assert__.totalArgs("row", [1], arguments);
-	this.__assert__.areNumbers("row", y);
-	this.__assert__.inBounds("row", 0, y);
-
-	var array = new Array();
-	for(var x = 0; x < this.x; x++)
-	{
-		array[x] = this[x][y];
-	}
-	return array;
-};
-
-
-
-Array2D.prototype.col = function(x) {
-	this.__assert__.totalArgs("col", [1], arguments);
-	this.__assert__.areNumbers("col", x);
-	this.__assert__.inBounds("col", x, 0);
-
-	var array = new Array();
-	for(var y = 0; y < this.y; y++)
-	{
-		array[y] = this[x][y];
-	}
-	return array;
-};
 
 Array2D.prototype.spliceRow = function(array) {
 

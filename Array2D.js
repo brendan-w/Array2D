@@ -85,8 +85,25 @@ Array2D.prototype.build = function(nx, ny, def) {
 	}
 };
 
-Array2D.prototype.inBounds = function(x, y) {
-	return (x >= 0) && (x < this.x) && (y >= 0) && (y < this.y);
+Array2D.prototype.inBounds = function(x, y, w, h) {
+	for(var i = 0; i < arguments.length; i++)
+	{
+		if(isNaN(arguments[i]))
+		{
+			console.log("inBounds Error: argument " + (i+1) + " is not a number");
+			return;
+		}
+	}
+
+	switch(arguments.length)
+	{
+		case 2:
+			return (x >= 0) && (x < this.x) && (y >= 0) && (y < this.y);
+			break;
+		case 4:
+			return this.inBounds(x, y) && this.inBounds(x+w-1, y+h-1);
+			break;
+	}
 };
 
 Array2D.prototype.forEach = function(callback) {
@@ -105,8 +122,14 @@ Array2D.prototype.forEach = function(callback) {
 	}
 };
 
+Array2D.prototype.for = function(x, y, w, h, callback) {
+	this.forEach(function(v, x, y, a) {
 
-Array2D.prototype.setAll = function(value) {
+	});
+};
+
+
+Array2D.prototype.setEach = function(value) {
 	if(value === undefined)
 	{
 		value = this.default_value;
@@ -115,6 +138,13 @@ Array2D.prototype.setAll = function(value) {
 	this.forEach(function(v, x, y) {
 		this[x][y] = value;
 	});
+};
+
+
+Array2D.prototype.set = function(array, x, y) {
+	x = (x === undefined) || (isNaN(x)) ? 0 : x;
+	y = (y === undefined) || (isNaN(y)) ? 0 : y;
+
 };
 
 
@@ -212,7 +242,7 @@ Array2D.prototype.crop = function(x, y, w, h) {
 		}
 	}
 
-	if(this.inBounds(x, y) && this.inBounds(x+w-1, y+h-1))
+	if(this.inBounds(x, y, w, h))
 	{
 		this.resize((x+w)-this.x, (y+h)-this.y, -x, -y);
 	}
@@ -220,6 +250,17 @@ Array2D.prototype.crop = function(x, y, w, h) {
 	{
 		console.log("Crop Error: The requested area goes out of bounds");
 		return;
+	}
+};
+
+Array2D.prototype.shift = function(x, y, wrap) {
+	x = (x === undefined) || (isNaN(x)) ? 0 : x;
+	y = (y === undefined) || (isNaN(y)) ? 0 : y;
+	wrap = (wrap === undefined) || (typeof wrap !== "boolean") ? true : wrap;
+
+	if((x !== 0) && (y !== 0))
+	{
+		this.resize(-x, -y, x, y);
 	}
 };
 

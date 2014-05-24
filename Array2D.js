@@ -63,6 +63,57 @@ var Array2D = function() {
 
 
 /*
+ * Internal functions
+ */
+
+Array2D.prototype.__assert__ = {
+	totalArgs:function(sourceName, nums, args) {
+		for(var i = 0; i < nums.length; i++)
+		{
+			if(nums[i] === args.length) { return; }
+		}
+		throw "Array2D Error [" + sourceName + "]: wrong number of arguments";
+	},
+
+	areNumbers:function(sourceName) {
+		for(var i = 1; i < arguments.length; i++)
+		{
+			if(isNaN(arguments[i]))
+			{
+				throw "Array2D Error [" + sourceName + "]: argument not a number";
+			}
+		}
+	},
+
+	isFunction:function(sourceName, callback) {
+		if((callback === undefined) || !(callback instanceof Function))
+		{
+			throw "Array2D Error [" + sourceName + "]: callback is not a function";
+		}
+	},
+
+	inBounds:function(sourceName, x, y, w, h) {
+		switch(arguments.length)
+		{
+			case 3:
+				if(!this.inBounds(x, y))
+				{
+					throw "Array2D Error [" + sourceName + "]: array index (" + x + ", " + y + ") out of bounds";
+				}
+				break;
+			case 5:
+				if(!this.inBounds(x, y, w, h))
+				{
+					throw "Array2D Error [" + sourceName + "]: rectangular area (" + x + ", " + y + ", " + w + ", " + h + ") out of bounds";
+				}
+				break;
+
+		}
+	}
+};
+
+
+/*
  * API functions
  */
 
@@ -72,10 +123,7 @@ Array2D.prototype.build = function(nx, ny, def) {
 
 	this.x = nx;
 	this.y = ny;
-	if(def !== undefined)
-	{
-		this.default_value = def;
-	}
+	this.default_value = def !== undefined ? def : this.default_value;
 
 	for(var x = 0; x < this.x; x++)
 	{
@@ -90,32 +138,23 @@ Array2D.prototype.build = function(nx, ny, def) {
 //inBounds(x, y)
 //inBounds(x, y, w, h)
 Array2D.prototype.inBounds = function(x, y, w, h) {
-	for(var i = 0; i < arguments.length; i++)
-	{
-		if(isNaN(arguments[i]))
-		{
-			console.log("inBounds Error: argument " + (i+1) + " is not a number");
-			return;
-		}
-	}
-
+	this.__assert__.totalArgs("inBounds", [2,4], arguments);
 	switch(arguments.length)
 	{
 		case 2:
+			this.__assert__.areNumbers("inBounds", x, y);
 			return (x >= 0) && (x < this.x) && (y >= 0) && (y < this.y);
 			break;
 		case 4:
+			this.__assert__.areNumbers("inBounds", x, y, w, h);
 			return this.inBounds(x, y) && this.inBounds(x+w-1, y+h-1);
 			break;
 	}
 };
 
 Array2D.prototype.forEach = function(callback) {
-	if((callback === undefined) || !(callback instanceof Function))
-	{
-		console.log("forEach Error: must supply callback function as a parameter");
-		return this;
-	}
+	this.__assert__.totalArgs("forEach", [1], arguments);
+	this.__assert__.isFunction("forEach", callback);
 
 	for(var x = 0; x < this.x; x++)
 	{
@@ -127,26 +166,10 @@ Array2D.prototype.forEach = function(callback) {
 };
 
 Array2D.prototype.forGroup = function(x, y, w, h, callback) {
-	for(var i = 0; i < 4; i++)
-	{
-		if((arguments[i] === undefined) || isNaN(arguments[i]))
-		{
-			console.log("forGroup Error: argument " + (i+1) + " is not a number");
-			return;
-		}
-	}
-
-	if((callback === undefined) || !(callback instanceof Function))
-	{
-		console.log("forGroup Error: must supply callback function as a parameter");
-		return this;
-	}
-
-	if(!this.inBounds(x, y, w, h))
-	{
-		console.log("forGroup Error: The requested area goes out of bounds");
-		return;
-	}
+	this.__assert__.totalArgs("forGroup", [5], arguments);
+	this.__assert__.areNumbers("forGroup", x, y, w, h);
+	this.__assert__.isFunction("forGroup", callback);
+	this.__assert__.inBounds("forGroup", x, y, w, h);
 
 	for(var cx = x; cx < x+w; cx++)
 	{
@@ -158,23 +181,10 @@ Array2D.prototype.forGroup = function(x, y, w, h, callback) {
 };
 
 Array2D.prototype.forRow = function(y, callback) {
-	if((callback === undefined) || !(callback instanceof Function))
-	{
-		console.log("forRow Error: must supply callback function as a parameter");
-		return this;
-	}
-
-	if(isNan(y))
-	{
-		console.log("forRow Error: Row value must be a number");
-		return this;
-	}
-
-	if(!this.inBounds(0, y))
-	{
-		console.log("forRow Error: Row value out of bounds");
-		return this;
-	}
+	this.__assert__.totalArgs("forRow", [2], arguments);
+	this.__assert__.areNumbers("forRow", y);
+	this.__assert__.isFunction("forRow", callback);
+	this.__assert__.inBounds("forRow", 0, y);
 
 	for(var x = 0; x < this.x; x++)
 	{
@@ -183,23 +193,10 @@ Array2D.prototype.forRow = function(y, callback) {
 };
 
 Array2D.prototype.forCol = function(x, callback) {
-	if((callback === undefined) || !(callback instanceof Function))
-	{
-		console.log("forCol Error: must supply callback function as a parameter");
-		return this;
-	}
-
-	if(isNan(x))
-	{
-		console.log("forCol Error: Column value must be a number");
-		return this;
-	}
-
-	if(!this.inBounds(x, 0))
-	{
-		console.log("forCol Error: Column value out of bounds");
-		return this;
-	}
+	this.__assert__.totalArgs("forCol", [2], arguments);
+	this.__assert__.areNumbers("forCol", x);
+	this.__assert__.isFunction("forCol", callback);
+	this.__assert__.inBounds("forCol", x, 0);
 
 	for(var y = 0; y < this.y; y++)
 	{
@@ -210,11 +207,8 @@ Array2D.prototype.forCol = function(x, callback) {
 
 //setEach()
 //setEach(value)
-Array2D.prototype.setEach = function(value) {
-	if(value === undefined)
-	{
-		value = this.default_value;
-	}
+Array2D.prototype.fill = function(value) {
+	value = value === undefined ? this.default_value : value;
 
 	this.forEach(function(v, x, y) {
 		this[x][y] = value;
@@ -223,13 +217,10 @@ Array2D.prototype.setEach = function(value) {
 
 
 Array2D.prototype.setGroup = function(x, y, w, h, value) {
-	x = (x === undefined) || (isNaN(x)) ? 0 : x;
-	y = (y === undefined) || (isNaN(y)) ? 0 : y;
+	this.__assert__.totalArgs("setGroup", [4, 5], arguments);
+	this.__assert__.areNumbers("setGroup", x, y, w, h);
 
-	if(value === undefined)
-	{
-		value = this.default_value;
-	}
+	value = value === undefined ? this.default_value : value;
 
 };
 
@@ -237,22 +228,11 @@ Array2D.prototype.setGroup = function(x, y, w, h, value) {
 //setRow(y)
 //setRow(y, value)
 Array2D.prototype.setRow = function(y, value) {
-	if(isNaN(y))
-	{
-		console.log("setRow Error: Row value must be a number");
-		return this;
-	}
+	this.__assert__.totalArgs("setRow", [1, 2], arguments);
+	this.__assert__.areNumbers("setRow", y);
+	this.__assert__.inBounds("setRow", 0, y);
 
-	if(!this.inBounds(0, y))
-	{
-		console.log("setRow Error: Row value out of bounds");
-		return this;
-	}
-
-	if(value === undefined)
-	{
-		value = this.default_value;
-	}
+	value = value === undefined ? this.default_value : value;
 
 	for(var x = 0; x < this.x; x++)
 	{
@@ -263,22 +243,11 @@ Array2D.prototype.setRow = function(y, value) {
 //setCol(y)
 //setCol(y, value)
 Array2D.prototype.setCol = function(x, value) {
-	if(isNan(x))
-	{
-		console.log("setCol Error: Column value must be a number");
-		return this;
-	}
+	this.__assert__.totalArgs("setCol", [1, 2], arguments);
+	this.__assert__.areNumbers("setCol", x);
+	this.__assert__.inBounds("setCol", x, 0);
 
-	if(!this.inBounds(x, 0))
-	{
-		console.log("setCol Error: Column value out of bounds");
-		return this;
-	}
-
-	if(value === undefined)
-	{
-		value = this.default_value;
-	}
+	value = value === undefined ? this.default_value : value;
 
 	for(var y = 0; y < this.y; y++)
 	{
@@ -288,17 +257,9 @@ Array2D.prototype.setCol = function(x, value) {
 
 
 Array2D.prototype.row = function(y) {
-	if(isNaN(y))
-	{
-		console.log("Row Error: Row value must be a number");
-		return this;
-	}
-
-	if(!this.inBounds(0, y))
-	{
-		console.log("Row Error: Row value out of bounds");
-		return this;
-	}
+	this.__assert__.totalArgs("row", [1], arguments);
+	this.__assert__.areNumbers("row", y);
+	this.__assert__.inBounds("row", 0, y);
 
 	var array = new Array();
 	for(var x = 0; x < this.x; x++)
@@ -311,17 +272,9 @@ Array2D.prototype.row = function(y) {
 
 
 Array2D.prototype.col = function(x) {
-	if(isNan(x))
-	{
-		console.log("Col Error: Column value must be a number");
-		return this;
-	}
-
-	if(!this.inBounds(x, 0))
-	{
-		console.log("Col Error: Column value out of bounds");
-		return this;
-	}
+	this.__assert__.totalArgs("col", [1], arguments);
+	this.__assert__.areNumbers("col", x);
+	this.__assert__.inBounds("col", x, 0);
 
 	var array = new Array();
 	for(var y = 0; y < this.y; y++)
@@ -344,6 +297,7 @@ Array2D.prototype.spliceCol = function(array) {
 //resize(_x, _y, x_)
 //resize(_x, _y, x_, y_)
 Array2D.prototype.resize = function(_x, _y, x_, y_) {
+	this.__assert__.totalArgs("resize", [1,2,3,4], arguments);
 
 	_x = (_x === undefined) || (isNaN(_x)) ? 0 : _x;
 	_y = (_y === undefined) || (isNaN(_y)) ? 0 : _y;
@@ -356,8 +310,7 @@ Array2D.prototype.resize = function(_x, _y, x_, y_) {
 
 	if((nx < 1) || (ny < 1))
 	{
-		console.log("Resize Error: contraction not possible, will result in zero sized array");
-		return this;
+		console.log("Resize Error: contraction not possible, will result in zero sized array"); return this;
 	}
 	else if((nx !== 0) && (ny !== 0)) //if it requires any changing
 	{
@@ -380,32 +333,20 @@ Array2D.prototype.resize = function(_x, _y, x_, y_) {
 };
 
 Array2D.prototype.crop = function(x, y, w, h) {
-	for(var i = 0; i < arguments.length; i++)
-	{
-		if((arguments[i] === undefined) || isNaN(arguments[i]))
-		{
-			console.log("Crop Error: argument " + (i+1) + " is not a number");
-			return;
-		}
-	}
+	this.__assert__.totalArgs("crop", [4], arguments);
+	this.__assert__.areNumbers("crop", x, y, w, h);
+	this.__assert__.inBounds("crop", x, y, w, h);
 
-	if(this.inBounds(x, y, w, h))
-	{
-		this.resize((x+w)-this.x, (y+h)-this.y, -x, -y);
-	}
-	else
-	{
-		console.log("Crop Error: The requested area goes out of bounds");
-		return;
-	}
+	this.resize((x+w)-this.x, (y+h)-this.y, -x, -y);
 };
 
 //shift(x)
 //shift(x, y)
 //shift(x, y, wrap)
 Array2D.prototype.shift = function(x, y, wrap) {
-	x = (x === undefined) || (isNaN(x)) ? 0 : x;
-	y = (y === undefined) || (isNaN(y)) ? 0 : y;
+	this.__assert__.totalArgs("shift", [2,3], arguments);
+	this.__assert__.areNumbers("shift", x, y);
+
 	wrap = (wrap === undefined) || (typeof wrap !== "boolean") ? true : wrap;
 
 	if((x !== 0) && (y !== 0))
@@ -423,7 +364,7 @@ Array2D.prototype.rotate = function(clockwise) {
 //log(renderFunction)
 Array2D.prototype.log = function(renderFunction) {
 
-	if(renderFunction === undefined)
+	if((renderFunction === undefined) || !(renderFunction instanceof Function))
 	{
 		renderFunction = function(data) { return data; }; //default render function
 	}

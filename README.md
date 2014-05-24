@@ -26,44 +26,39 @@ All rectangular area parameters follow the format:
 
 ###Traversal
 
-**forEach(callback)** iterates over all elements
+**forEach(callback)**							iterates over all elements
 
-**forGroup(x, y, width, height, callback)** iterates over the given rectangular area
+**forGroup(x, y, width, height, callback)**		iterates over the given rectangular area
 
-**forRow(y, callback)** iterates over the given row
+**forRow(y, callback)**							iterates over the given row
 
-**forCol(x, callback)** iterates over the given column
+**forCol(x, callback)**							iterates over the given column
 
 ###2D Operations
 
-	resize(right, bottom, left, top)
+**resize(right, bottom, left, top)**	resizes this array, by relatively adding or deleting the specified number of rows or columns. Positive numbers add, negative numbers delete.
 
-resizes this array, by relatively adding or deleting the specified number of rows or columns. Positive numbers add, negative numbers delete.
+**crop(x, y, width, height)**			sets this array to the given rectangular area by deleting elements
 
-	crop(x, y, width, height)
-
-sets this array to the given rectangular area by deleting elements
-
-	rotate(clockwise)
-
-rotates the array 90 degrees in the specified direction
+**rotate(clockwise)**					rotates the array 90 degrees in the specified direction
 
 ###Row and Column Operations
 
-	row(y)
-	col(x)
+**row(y)**				returns the row or column as an array
 
-returns the row or column as an array
+**col(x)**
 
-	setRow(y, array)
-	setCol(x, array)
+**setRow(y, array)**	sets the existing row or column to the contents of the given array (existing data will be overwritten)
 
-sets the existing row or column to the contents of the given array (existing data will be overwritten)
+**setCol(x, array)**
 
-	spliceRow(y)
-	spliceCol(x)
-	spliceRow(y, array)
-	spliceCol(x, array)
+**spliceRow(y)**
+
+**spliceCol(x)**
+
+**spliceRow(y, array)**
+
+**spliceCol(x, array)**
 
 creates a new row or column at the specified index. If an array is given, it will fill the new row or column with the contents. If no array is given, it will be filled with the default value.
 

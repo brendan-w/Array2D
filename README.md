@@ -26,17 +26,13 @@ All rectangular area parameters follow the format:
 
 ###Traversal
 
-####forEach(callback)
-iterates over all elements
+**forEach(callback)** iterates over all elements
 
-####forGroup(x, y, width, height, callback)
-iterates over the given rectangular area
+**forGroup(x, y, width, height, callback)** iterates over the given rectangular area
 
-####forRow(y, callback)
-iterates over the given row
+**forRow(y, callback)** iterates over the given row
 
-####forCol(x, callback)
-iterates over the given column
+**forCol(x, callback)** iterates over the given column
 
 ###2D Operations
 

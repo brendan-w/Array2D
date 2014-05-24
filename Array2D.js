@@ -59,13 +59,15 @@ var Array2D = function() {
 
 	//Start
 	construct.apply(this, arguments);
-};
+}; //End constructor
 
 
 /*
  * API functions
  */
 
+//build(x, y)
+//build(x, y, default)
 Array2D.prototype.build = function(nx, ny, def) {
 
 	this.x = nx;
@@ -85,6 +87,8 @@ Array2D.prototype.build = function(nx, ny, def) {
 	}
 };
 
+//inBounds(x, y)
+//inBounds(x, y, w, h)
 Array2D.prototype.inBounds = function(x, y, w, h) {
 	for(var i = 0; i < arguments.length; i++)
 	{
@@ -122,13 +126,84 @@ Array2D.prototype.forEach = function(callback) {
 	}
 };
 
-Array2D.prototype.for = function(x, y, w, h, callback) {
-	this.forEach(function(v, x, y, a) {
+Array2D.prototype.forGroup = function(x, y, w, h, callback) {
+	for(var i = 0; i < 4; i++)
+	{
+		if((arguments[i] === undefined) || isNaN(arguments[i]))
+		{
+			console.log("forGroup Error: argument " + (i+1) + " is not a number");
+			return;
+		}
+	}
 
-	});
+	if((callback === undefined) || !(callback instanceof Function))
+	{
+		console.log("forGroup Error: must supply callback function as a parameter");
+		return this;
+	}
+
+	for(var cx = x; cx < x+w; cx++)
+	{
+		for(var cy = y; cy < y+h; cy++)
+		{
+			callback(this[cx][cy], cx, cy, this);
+		}
+	}
+};
+
+Array2D.prototype.forRow = function(y, callback) {
+	if((callback === undefined) || !(callback instanceof Function))
+	{
+		console.log("forRow Error: must supply callback function as a parameter");
+		return this;
+	}
+
+	if(isNan(y))
+	{
+		console.log("forRow Error: row value must be a number");
+		return this;
+	}
+
+	if(!this.inBounds(0, y))
+	{
+		console.log("forRow Error: row value out of bounds");
+		return this;
+	}
+
+	for(var x = 0; x < this.x; x++)
+	{
+		callback(this[x][y], x, y, this);
+	}
+};
+
+Array2D.prototype.forCol = function(x, callback) {
+	if((callback === undefined) || !(callback instanceof Function))
+	{
+		console.log("forRow Error: must supply callback function as a parameter");
+		return this;
+	}
+
+	if(isNan(x))
+	{
+		console.log("forRow Error: row value must be a number");
+		return this;
+	}
+
+	if(!this.inBounds(x, 0))
+	{
+		console.log("forRow Error: row value out of bounds");
+		return this;
+	}
+
+	for(var y = 0; y < this.y; y++)
+	{
+		callback(this[x][y], x, y, this);
+	}
 };
 
 
+//setEach()
+//setEach(value)
 Array2D.prototype.setEach = function(value) {
 	if(value === undefined)
 	{
@@ -141,7 +216,7 @@ Array2D.prototype.setEach = function(value) {
 };
 
 
-Array2D.prototype.set = function(array, x, y) {
+Array2D.prototype.setGroup = function(array, x, y) {
 	x = (x === undefined) || (isNaN(x)) ? 0 : x;
 	y = (y === undefined) || (isNaN(y)) ? 0 : y;
 
@@ -278,10 +353,7 @@ Array2D.prototype.log = function(renderCallback) {
 	function genChars(c, l)
 	{
 		var str = "";
-		for(var i = 0; i < l; i++)
-		{
-			str += c;
-		}
+		for(var i = 0; i < l; i++) { str += c; }
 		return str;
 	}
 

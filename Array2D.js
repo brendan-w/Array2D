@@ -160,13 +160,13 @@ Array2D.prototype.forRow = function(y, callback) {
 
 	if(isNan(y))
 	{
-		console.log("forRow Error: row value must be a number");
+		console.log("forRow Error: Row value must be a number");
 		return this;
 	}
 
 	if(!this.inBounds(0, y))
 	{
-		console.log("forRow Error: row value out of bounds");
+		console.log("forRow Error: Row value out of bounds");
 		return this;
 	}
 
@@ -179,19 +179,19 @@ Array2D.prototype.forRow = function(y, callback) {
 Array2D.prototype.forCol = function(x, callback) {
 	if((callback === undefined) || !(callback instanceof Function))
 	{
-		console.log("forRow Error: must supply callback function as a parameter");
+		console.log("forCol Error: must supply callback function as a parameter");
 		return this;
 	}
 
 	if(isNan(x))
 	{
-		console.log("forRow Error: row value must be a number");
+		console.log("forCol Error: Column value must be a number");
 		return this;
 	}
 
 	if(!this.inBounds(x, 0))
 	{
-		console.log("forRow Error: row value out of bounds");
+		console.log("forCol Error: Column value out of bounds");
 		return this;
 	}
 
@@ -223,10 +223,25 @@ Array2D.prototype.setGroup = function(array, x, y) {
 };
 
 
+Array2D.prototype.setRow = function(y, array) {
+
+};
+
+Array2D.prototype.setCol = function(x, array) {
+	
+};
+
+
 Array2D.prototype.row = function(y) {
-	if(isNaN(y) || (y < 0) || (y > (this.y - 1)))
+	if(isNaN(y))
 	{
-		console.log("Invalid argument for row()");
+		console.log("Row Error: Row value must be a number");
+		return this;
+	}
+
+	if(!this.inBounds(0, y))
+	{
+		console.log("Row Error: Row value out of bounds");
 		return this;
 	}
 
@@ -241,9 +256,15 @@ Array2D.prototype.row = function(y) {
 
 
 Array2D.prototype.col = function(x) {
-	if(isNaN(x) || (x < 0) || (x > (this.x - 1)))
+	if(isNan(x))
 	{
-		console.log("Invalid argument for col()");
+		console.log("Col Error: Column value must be a number");
+		return this;
+	}
+
+	if(!this.inBounds(x, 0))
+	{
+		console.log("Col Error: Column value out of bounds");
 		return this;
 	}
 
@@ -253,14 +274,6 @@ Array2D.prototype.col = function(x) {
 		array[y] = this[x][y];
 	}
 	return array;
-};
-
-Array2D.prototype.setRow = function(y, array) {
-
-};
-
-Array2D.prototype.setCol = function(x, array) {
-	
 };
 
 Array2D.prototype.spliceRow = function(array) {

@@ -24,14 +24,21 @@ All rectangular area parameters follow the format:
 
 	(x, y, width, height)
 
-####Traversal
+###Traversal
 
-	forEach(callback)							//iterates over all elements
-	forGroup(x, y, width, height, callback)		//iterates over the given rectangular area
-	forRow(y, callback)							//iterates over the given row
-	forCol(x, callback)							//iterates over the given column
+####forEach(callback)
+iterates over all elements
 
-####2D Operations
+####forGroup(x, y, width, height, callback)
+iterates over the given rectangular area
+
+####forRow(y, callback)
+iterates over the given row
+
+####forCol(x, callback)
+iterates over the given column
+
+###2D Operations
 
 	resize(right, bottom, left, top)
 
@@ -45,9 +52,10 @@ sets this array to the given rectangular area by deleting elements
 
 rotates the array 90 degrees in the specified direction
 
-####Row and Column Operations
+###Row and Column Operations
 
 	row(y)
+	col(x)
 
 returns the row or column as an array
 
@@ -63,7 +71,7 @@ sets the existing row or column to the contents of the given array (existing dat
 
 creates a new row or column at the specified index. If an array is given, it will fill the new row or column with the contents. If no array is given, it will be filled with the default value.
 
-####Debug
+###Debug
 
 	log()
 	log(callback)

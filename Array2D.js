@@ -142,6 +142,12 @@ Array2D.prototype.forGroup = function(x, y, w, h, callback) {
 		return this;
 	}
 
+	if(!this.inBounds(x, y, w, h))
+	{
+		console.log("forGroup Error: The requested area goes out of bounds");
+		return;
+	}
+
 	for(var cx = x; cx < x+w; cx++)
 	{
 		for(var cy = y; cy < y+h; cy++)
@@ -216,19 +222,68 @@ Array2D.prototype.setEach = function(value) {
 };
 
 
-Array2D.prototype.setGroup = function(array, x, y) {
+Array2D.prototype.setGroup = function(x, y, w, h, value) {
 	x = (x === undefined) || (isNaN(x)) ? 0 : x;
 	y = (y === undefined) || (isNaN(y)) ? 0 : y;
 
+	if(value === undefined)
+	{
+		value = this.default_value;
+	}
+
 };
 
 
-Array2D.prototype.setRow = function(y, array) {
+//setRow(y)
+//setRow(y, value)
+Array2D.prototype.setRow = function(y, value) {
+	if(isNaN(y))
+	{
+		console.log("setRow Error: Row value must be a number");
+		return this;
+	}
 
+	if(!this.inBounds(0, y))
+	{
+		console.log("setRow Error: Row value out of bounds");
+		return this;
+	}
+
+	if(value === undefined)
+	{
+		value = this.default_value;
+	}
+
+	for(var x = 0; x < this.x; x++)
+	{
+		this[x][y] = array[x];
+	}
 };
 
-Array2D.prototype.setCol = function(x, array) {
-	
+//setCol(y)
+//setCol(y, value)
+Array2D.prototype.setCol = function(x, value) {
+	if(isNan(x))
+	{
+		console.log("setCol Error: Column value must be a number");
+		return this;
+	}
+
+	if(!this.inBounds(x, 0))
+	{
+		console.log("setCol Error: Column value out of bounds");
+		return this;
+	}
+
+	if(value === undefined)
+	{
+		value = this.default_value;
+	}
+
+	for(var y = 0; y < this.y; y++)
+	{
+		this[x][y] = array[y];
+	}
 };
 
 
@@ -284,6 +339,10 @@ Array2D.prototype.spliceCol = function(array) {
 	
 };
 
+//resize(_x)
+//resize(_x, _y)
+//resize(_x, _y, x_)
+//resize(_x, _y, x_, y_)
 Array2D.prototype.resize = function(_x, _y, x_, y_) {
 
 	_x = (_x === undefined) || (isNaN(_x)) ? 0 : _x;
@@ -341,6 +400,9 @@ Array2D.prototype.crop = function(x, y, w, h) {
 	}
 };
 
+//shift(x)
+//shift(x, y)
+//shift(x, y, wrap)
 Array2D.prototype.shift = function(x, y, wrap) {
 	x = (x === undefined) || (isNaN(x)) ? 0 : x;
 	y = (y === undefined) || (isNaN(y)) ? 0 : y;
@@ -356,11 +418,14 @@ Array2D.prototype.rotate = function(clockwise) {
 
 };
 
-Array2D.prototype.log = function(renderCallback) {
 
-	if(renderCallback === undefined)
+//log()
+//log(renderFunction)
+Array2D.prototype.log = function(renderFunction) {
+
+	if(renderFunction === undefined)
 	{
-		renderCallback = function(data) { return data; }; //default render function
+		renderFunction = function(data) { return data; }; //default render function
 	}
 
 	function genChars(c, l)
@@ -402,7 +467,7 @@ Array2D.prototype.log = function(renderCallback) {
 		var line = padLeft(String(y), maxYWidth) + "| ";
 		for(var x = 0; x < this.x; x++)
 		{
-			line += padRight(String(renderCallback(this[x][y])), maxElementWidth + 1);
+			line += padRight(String(renderFunction(this[x][y])), maxElementWidth + 1);
 		}
 		console.log(line);
 	}

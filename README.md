@@ -9,7 +9,7 @@ Constructors
 
 	array2D(x, y)				//creates a new array2D object, with dimensions (x, y)
 	array2D(x, y, default)		//same as above, but sets the default value and fills all elements
-	array2D(&lt;array2D&gt;)	//copy constructor
+	array2D(<array2D>)			//copy constructor
 
 
 
@@ -31,6 +31,13 @@ All rectangular area parameters follow the format:
 	forRow(y, callback)							//iterates over the given row
 	forCol(x, callback)							//iterates over the given column
 
+###Setting Data
+
+	fill(value)						//sets all elements to the given value
+	fill()							//sets all elements to the default value
+	setGroup(x, y, w, h, value)		//set rectangular area to the given value
+	setGroup(x, y, w, h)			//set rectangular area to the default value
+
 ###2D Operations
 
 	resize(right, bottom, left, top)
@@ -40,6 +47,11 @@ resizes this array, by relatively adding or deleting the specified number of row
 	crop(x, y, width, height)
 
 sets this array to the given rectangular area by deleting elements
+
+	shift(x, y)
+	shift(x, y, wrap)
+
+shifts the array by the specified number of rows and columns. Negative sifts are welcome. Optional boolean wrap parameter will wrap the elements around the edge
 
 	rotate(clockwise)
 
@@ -60,5 +72,7 @@ rotates the array 90 degrees in the specified direction
 
 ###Debug
 
-	log()			//prints the array to the console
-	log(callback)	//optional callback for element rendering (please return your value)
+	log()					//prints the array to the console
+	log(callback)			//optional callback for element rendering (please return your value)
+	inBounds(x, y)			//return true/false whether the point is within the array
+	inBounds(x, y, w, h)	//return true/false whether the rectangular area is within the array

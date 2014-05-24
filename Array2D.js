@@ -30,7 +30,7 @@ var Array2D = function() {
 				{
 					var old = arguments[0];
 
-					_this.build(old.x, old.y, old.default_value);
+					_this.__build__(old.x, old.y, old.default_value);
 
 					_this.forEach(function(v, x, y, a) {
 						a[x][y] = old[x][y];
@@ -41,14 +41,14 @@ var Array2D = function() {
 			case 2: //normal Array2D constructor
 				if(!isNaN(arguments[0]) && !isNaN(arguments[1]))
 				{
-					_this.build(arguments[0], arguments[1], 0);
+					_this.__build__(arguments[0], arguments[1], 0);
 				}
 				break;
 
 			case 3: //normal Array2D constructor, with default value parameter
 				if(!isNaN(arguments[0]) && !isNaN(arguments[1]))
 				{
-					_this.build.apply(_this, arguments);
+					_this.__build__.apply(_this, arguments);
 				}
 				break;
 
@@ -113,13 +113,7 @@ Array2D.prototype.__assert__ = {
 };
 
 
-/*
- * API functions
- */
-
-//build(x, y)
-//build(x, y, default)
-Array2D.prototype.build = function(nx, ny, def) {
+Array2D.prototype.__build__ = function(nx, ny, def) {
 
 	this.x = nx;
 	this.y = ny;
@@ -135,6 +129,11 @@ Array2D.prototype.build = function(nx, ny, def) {
 	}
 };
 
+
+/*
+ * API functions
+ */
+
 //inBounds(x, y)
 //inBounds(x, y, w, h)
 Array2D.prototype.inBounds = function(x, y, w, h) {
@@ -142,11 +141,9 @@ Array2D.prototype.inBounds = function(x, y, w, h) {
 	switch(arguments.length)
 	{
 		case 2:
-			this.__assert__.areNumbers("inBounds", x, y);
 			return (x >= 0) && (x < this.x) && (y >= 0) && (y < this.y);
 			break;
 		case 4:
-			this.__assert__.areNumbers("inBounds", x, y, w, h);
 			return this.inBounds(x, y) && this.inBounds(x+w-1, y+h-1);
 			break;
 	}
@@ -222,6 +219,13 @@ Array2D.prototype.setGroup = function(x, y, w, h, value) {
 
 	value = value === undefined ? this.default_value : value;
 
+	for(var cx = x; cx < x+w; cx++)
+	{
+		for(var cy = y; cy < y+h; cy++)
+		{
+			this[cx][cy] = value;
+		}
+	}
 };
 
 
@@ -316,7 +320,7 @@ Array2D.prototype.resize = function(_x, _y, x_, y_) {
 	{
 		//save a copy of this array, and rebuild for new dimensions
 		var existingData = new Array2D(this);
-		this.build(nx, ny, this.default_value);
+		this.__build__(nx, ny, this.default_value);
 		var _this = this; //because of callback function below
 
 		existingData.forEach(function(v, x, y) {
@@ -340,7 +344,6 @@ Array2D.prototype.crop = function(x, y, w, h) {
 	this.resize((x+w)-this.x, (y+h)-this.y, -x, -y);
 };
 
-//shift(x)
 //shift(x, y)
 //shift(x, y, wrap)
 Array2D.prototype.shift = function(x, y, wrap) {

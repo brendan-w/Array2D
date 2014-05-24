@@ -26,45 +26,39 @@ All rectangular area parameters follow the format:
 
 ###Traversal
 
-**forEach(callback)**							iterates over all elements
-
-**forGroup(x, y, width, height, callback)**		iterates over the given rectangular area
-
-**forRow(y, callback)**							iterates over the given row
-
-**forCol(x, callback)**							iterates over the given column
+	forEach(callback)							//iterates over all elements
+	forGroup(x, y, width, height, callback)		//iterates over the given rectangular area
+	forRow(y, callback)							//iterates over the given row
+	forCol(x, callback)							//iterates over the given column
 
 ###2D Operations
 
-**resize(right, bottom, left, top)**	resizes this array, by relatively adding or deleting the specified number of rows or columns. Positive numbers add, negative numbers delete.
+	resize(right, bottom, left, top)
 
-**crop(x, y, width, height)**			sets this array to the given rectangular area by deleting elements
+resizes this array, by relatively adding or deleting the specified number of rows or columns. Positive numbers add, negative numbers delete.
 
-**rotate(clockwise)**					rotates the array 90 degrees in the specified direction
+	crop(x, y, width, height)
+
+sets this array to the given rectangular area by deleting elements
+
+	rotate(clockwise)
+
+rotates the array 90 degrees in the specified direction
 
 ###Row and Column Operations
 
-**row(y)**				returns the row or column as an array
+	row(y)					//returns the row or column as an array
+	col(x)
 
-**col(x)**
+	setRow(y, array)		//sets existing row or column to the contents of the given array
+	setCol(x, array)
 
-**setRow(y, array)**	sets the existing row or column to the contents of the given array (existing data will be overwritten)
-
-**setCol(x, array)**
-
-**spliceRow(y)**
-
-**spliceCol(x)**
-
-**spliceRow(y, array)**
-
-**spliceCol(x, array)**
-
-creates a new row or column at the specified index. If an array is given, it will fill the new row or column with the contents. If no array is given, it will be filled with the default value.
+	spliceRow(y)			//creates new row or column at the index given, and fills with the default
+	spliceCol(x)
+	spliceRow(y, array)		//optional array arguments fills with the array's contents
+	spliceCol(x, array)
 
 ###Debug
 
-	log()
-	log(callback)
-
-prints the array to the console with optional callback for element rendering. When using this callback, please return your rendered value.
+	log()			//prints the array to the console
+	log(callback)	//optional callback for element rendering (please return your value)

@@ -19,16 +19,19 @@ array2D(&lt;array2D&gt;)
 API Functions
 ------------
 
+All callback functions are of the format:
+> function(value, x, y, array2D)
+
+All rectangular area parameters follow the format:
+> (x, y, width, height)
+
 
 ####Traversal
 
-.forEach(callback)
-
-.forRow(y, callback)
-
-.forCol(x, callback)
-
-.forGroup(x, y, width, height, callback)
+> forEach(callback)
+> forGroup(x, y, width, height, callback)
+> forRow(y, callback)
+> forCol(x, callback)
 
 
 

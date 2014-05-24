@@ -205,8 +205,8 @@ Array2D.prototype.forCol = function(x, callback) {
 };
 
 
-//setEach()
-//setEach(value)
+//fill()
+//fill(value)
 Array2D.prototype.fill = function(value) {
 	value = value === undefined ? this.default_value : value;
 
@@ -408,7 +408,8 @@ Array2D.prototype.log = function(renderFunction) {
 		var line = padLeft(String(y), maxYWidth) + "| ";
 		for(var x = 0; x < this.x; x++)
 		{
-			line += padRight(String(renderFunction(this[x][y])), maxElementWidth + 1);
+			var element = String(renderFunction(this[x][y], x, y, this));
+			line += padRight(element, maxElementWidth + 1);
 		}
 		console.log(line);
 	}

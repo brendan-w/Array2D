@@ -34,43 +34,55 @@ All rectangular area parameters follow the format:
 ###Setting Data
 
 	fill(value)						//sets all elements to the given value
-	fill()							//sets all elements to the default value
+	fill()							//if no value is given, the default value will be used
+	
 	setGroup(x, y, w, h, value)		//set rectangular area to the given value
-	setGroup(x, y, w, h)			//set rectangular area to the default value
+	setGroup(x, y, w, h)			//if no value is given, the default value will be used
+
+	setRow(y, array)				//sets existing row or column to the contents of the given array
+	setCol(x, array)
 
 ###2D Operations
 
 	resize(right, bottom, left, top)
 
-resizes this array, by relatively adding or deleting the specified number of rows or columns. Positive numbers add, negative numbers delete.
+Resizes this array by relatively adding or deleting the specified number of rows or columns. Positive numbers add, negative numbers delete. New elements will be filled with the default value.
 
 	crop(x, y, width, height)
 
-sets this array to the given rectangular area by deleting elements
+Sets this array to the given rectangular area by deleting elements.
 
 	shift(x, y)
 	shift(x, y, wrap)
 
-shifts the array by the specified number of rows and columns. Negative sifts are welcome. Optional boolean wrap parameter will wrap the elements around the edge
+Shifts the array by the specified number of rows and columns. Negative shifts are welcome. Optional boolean wrap parameter will wrap the elements around the edge. Elements will be wrapped by default.
 
 	rotate(clockwise)
 
-rotates the array 90 degrees in the specified direction
+Rotates the array 90 degrees in the specified direction.
+
+	invertX()
+	invertY()
+
+Inverts the array across the X or Y axis.
 
 ###Row and Column Operations
 
 	row(y)					//returns the row or column as an array
 	col(x)
 
-	setRow(y, array)		//sets existing row or column to the contents of the given array
-	setCol(x, array)
-
 	spliceRow(y)			//creates new row or column at the index given, and fills with the default
 	spliceCol(x)
 	spliceRow(y, array)		//optional array arguments fills with the array's contents
 	spliceCol(x, array)
 
-###Debug
+	swapRow(y1, y2)			//swaps the specified rows or columns
+	swapCol(x1, x2)
+
+	deleteRow(y)			//deletes the specified row or column
+	deleteCol(x)
+
+###Debug & Misc
 
 	log()					//prints the array to the console
 	log(callback)			//optional callback for element rendering (please return your value)

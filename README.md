@@ -16,6 +16,8 @@ Constructors
 API Functions
 ------------
 
+All API functions operate in-place (on the existing array).
+
 All callback functions are of the format:
 
 	function(value, x, y, array2D)
@@ -41,6 +43,8 @@ All rectangular area parameters follow the format:
 
 	setRow(y, array)				//sets existing row or column to the contents of the given array
 	setCol(x, array)
+	setRow(y)						//if no value is given, the default value will be used
+	setCol(x)
 
 ###2D Operations
 

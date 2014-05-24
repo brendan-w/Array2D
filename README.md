@@ -33,25 +33,39 @@ All rectangular area parameters follow the format:
 
 ####2D Operations
 
-	resize(right, bottom, left, top)	//resizes this array, by adding or deleting the specified number of columns
-										//positive numbers add, negative numbers delete
-	crop(x, y, width, height)			//sets this array to the given rectangular area by deleting elements
-	rotate(clockwise)					//rotates the array 90 degrees in the specified direction
+	resize(right, bottom, left, top)
+
+resizes this array, by relatively adding or deleting the specified number of rows or columns. Positive numbers add, negative numbers delete.
+
+	crop(x, y, width, height)
+
+sets this array to the given rectangular area by deleting elements
+
+	rotate(clockwise)
+
+rotates the array 90 degrees in the specified direction
 
 ####Row and Column Operations
 
-	row(y)					//returns the row as an array
-	col(x)					//returns the column as an array
+	row(y)
 
-	setRow(y, array)		//sets the row to the contents of the given array (existing data will be overwritten)
-	setCol(x, array)		//sets the column to the contents of the given array (existing data will be overwritten)
+returns the row or column as an array
 
-	spliceRow(y)			//creates a new row at the specified index, and fills it with the default value
-	spliceCol(x)			//creates a new column at the specified index, and fills it with the default value
-	spliceRow(y, array)		//creates a new row at the specified index, and fills it with the contents from the array
-	spliceCol(x, array)		//creates a new column at the specified index, and fills it with the contents from the array
+	setRow(y, array)
+	setCol(x, array)
+
+sets the existing row or column to the contents of the given array (existing data will be overwritten)
+
+	spliceRow(y)
+	spliceCol(x)
+	spliceRow(y, array)
+	spliceCol(x, array)
+
+creates a new row or column at the specified index. If an array is given, it will fill the new row or column with the contents. If no array is given, it will be filled with the default value.
 
 ####Debug
 
-	log()				//prints the array to the console with standard text renderer
-	log(callback)		//prints the array to the console with a custom text renderer (please return a value on each call)
+	log()
+	log(callback)
+
+prints the array to the console with optional callback for element rendering. When using this callback, please return your rendered value.

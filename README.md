@@ -20,18 +20,18 @@ API Functions
 ------------
 
 All callback functions are of the format:
-> function(value, x, y, array2D)
+	function(value, x, y, array2D)
 
 All rectangular area parameters follow the format:
-> (x, y, width, height)
+	(x, y, width, height)
 
 
 ####Traversal
 
-> forEach(callback)
-> forGroup(x, y, width, height, callback)
-> forRow(y, callback)
-> forCol(x, callback)
+	forEach(callback)
+	forGroup(x, y, width, height, callback)
+	forRow(y, callback)
+	forCol(x, callback)
 
 
 

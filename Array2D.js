@@ -328,7 +328,6 @@ Array2D.prototype.resize = function(_x, _y, x_, y_) {
 	else if((nx !== 0) && (ny !== 0)) //if it requires any changing
 	{
 		//save a copy of this array, and rebuild for new dimensions
-		var existingData = new Array2D(this);
 		this.__build__(nx, ny, this.default_value);
 		var _this = this; //because of callback function below
 
@@ -371,6 +370,21 @@ Array2D.prototype.rotate = function(clockwise) {
 
 };
 
+Array2D.prototype.invertX = function() {
+	var _this = this;
+	var existingData = new Array2D(this);
+	existingData.forEach(function(v, x, y, a) {
+		_this[x][y] = existingData[a.x - x - 1][y];
+	});
+};
+
+Array2D.prototype.invertY = function() {
+	var _this = this;
+	var existingData = new Array2D(this);
+	existingData.forEach(function(v, x, y, a) {
+		_this[x][y] = existingData[x][a.y - y - 1];
+	});
+};
 
 //log()
 //log(renderFunction)

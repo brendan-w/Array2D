@@ -399,6 +399,21 @@ Array2D.prototype.rotate = function(clockwise) {
 	return this;
 };
 
+Array2D.prototype.invertX = function() {
+	var _this = this;
+	var existingData = new Array2D(this);
+	existingData.forEach(function(v, x, y, a) {
+		_this[x][y] = existingData[a.x - x - 1][y];
+	});
+};
+
+Array2D.prototype.invertY = function() {
+	var _this = this;
+	var existingData = new Array2D(this);
+	existingData.forEach(function(v, x, y, a) {
+		_this[x][y] = existingData[x][a.y - y - 1];
+	});
+};
 
 /*
  * Misc utilities

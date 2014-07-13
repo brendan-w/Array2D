@@ -28,7 +28,7 @@ var Array2D = function() {
 		switch(arguments.length)
 		{
 			case 1: //copy constructor
-				_this.__assert__.isArray2D("constructor", arguments[0]);
+				_this.__assert__.typeOf("constructor", arguments[0], Array2D);
 
 				var old = arguments[0];
 				_this.__build__(old.x, old.y, old.default_value);
@@ -112,10 +112,10 @@ Array2D.prototype.__assert__ = {
 		}
 	},
 
-	isArray2D:function(sourceName, obj) {
-		if(!(obj instanceof Array2D))
+	typeOf:function(sourceName, obj, type) {
+		if(!(obj instanceof type))
 		{
-			throw "Array2D Error [" + sourceName + "]: parameter must be an Array2D object";
+			throw "Array2D Error [" + sourceName + "]: parameter must be of type [" + type.name + "]";
 		}
 	}
 };
@@ -301,18 +301,70 @@ Array2D.prototype.getCol = function(x) {
 };
 
 Array2D.prototype.setRow = function(array, y) {
+	this.__assert__.totalArgs("setRow", [2], arguments);
+	this.__assert__.areNumbers("setRow", y);
+	this.__assert__.inBounds("setRow", 0, y);
+	this.__assert__.typeOf("setRow", array, Array);
 	return this;
 };
 
 Array2D.prototype.setCol = function(array, x) {
+	this.__assert__.totalArgs("setCol", [2], arguments);
+	this.__assert__.areNumbers("setCol", x);
+	this.__assert__.inBounds("setCol", x, 0);
+	this.__assert__.typeOf("setCol", array, Array);
 	return this;
 };
 
+Array2D.prototype.swapRow = function(y1, y2) {
+	this.__assert__.totalArgs("swapRow", [2], arguments);
+	this.__assert__.areNumbers("swapRow", y1, y2);
+	this.__assert__.inBounds("swapRow", y1, 0);
+	this.__assert__.inBounds("swapRow", y1, 0);
+
+	if(y1 != y2)
+	{
+		for(var x = 0; i < this.x; x++)
+		{
+			var temp = this[x][y1];
+			this[x][y1] = this[x][y2];
+			this[x][y2] = temp;
+		}
+	}
+
+	return this;
+},
+
+Array2D.prototype.swapCol = function(x1, x2) {
+	this.__assert__.totalArgs("swapCol", [2], arguments);
+	this.__assert__.areNumbers("swapCol", x1, x2);
+	this.__assert__.inBounds("swapCol", x1, 0);
+	this.__assert__.inBounds("swapCol", x1, 0);
+
+	if(x1 != x2)
+	{
+		for(var y = 0; i < this.y; y++)
+		{
+			var temp = this[x1][y];
+			this[x1][y] = this[x2][y];
+			this[x2][y] = temp;
+		}
+	}
+
+	return this;
+},
+
 Array2D.prototype.spliceRow = function(array, y) {
+	this.__assert__.totalArgs("spliceRow", [2], arguments);
+	this.__assert__.areNumbers("spliceRow", y);
+	this.__assert__.typeOf("spliceRow", array, Array);
 	return this;
 };
 
 Array2D.prototype.spliceCol = function(array, x) {
+	this.__assert__.totalArgs("spliceCol", [2], arguments);
+	this.__assert__.areNumbers("spliceCol", x);
+	this.__assert__.typeOf("spliceCol", array, Array);
 	return this;
 };
 
@@ -405,6 +457,8 @@ Array2D.prototype.invertX = function() {
 	existingData.forEach(function(v, x, y, a) {
 		_this[x][y] = existingData[a.x - x - 1][y];
 	});
+
+	return this;
 };
 
 Array2D.prototype.invertY = function() {
@@ -413,6 +467,8 @@ Array2D.prototype.invertY = function() {
 	existingData.forEach(function(v, x, y, a) {
 		_this[x][y] = existingData[x][a.y - y - 1];
 	});
+
+	return this;
 };
 
 /*

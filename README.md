@@ -29,22 +29,22 @@ All rectangular area parameters follow the format:
 ###Traversal
 
 	forEach(callback)							//iterates over all elements
-	forGroup(x, y, width, height, callback)		//iterates over the given rectangular area
+	forArea(x, y, width, height, callback)		//iterates over the given rectangular area
 	forRow(y, callback)							//iterates over the given row
 	forCol(x, callback)							//iterates over the given column
 
-###Setting Data
+###Fill Statements
 
 	fill(value)						//sets all elements to the given value
 	fill()							//if no value is given, the default value will be used
-	
-	setGroup(x, y, w, h, value)		//set rectangular area to the given value
-	setGroup(x, y, w, h)			//if no value is given, the default value will be used
 
-	setRow(y, array)				//sets existing row or column to the contents of the given array
-	setCol(x, array)
-	setRow(y)						//if no value is given, the default value will be used
-	setCol(x)
+	fillRow(y, value)				//sets each element of the row or column to the given value
+	fillCol(x, value)
+	fillRow(y)						//if no value is given, the default value will be used
+	fillCol(x)
+	
+	fillArea(x, y, w, h, value)		//set rectangular area to the given value
+	fillArea(x, y, w, h)			//if no value is given, the default value will be used
 
 ###2D Operations
 
@@ -72,8 +72,11 @@ Inverts the array across the X or Y axis.
 
 ###Row and Column Operations
 
-	row(y)					//returns the row or column as an array
-	col(x)
+	getRow(y)				//returns the row or column as an array
+	getCol(x)
+
+	setRow(y, array)		//sets the row or column to the contents of the array
+	setCol(x, array)
 
 	spliceRow(y)			//creates new row or column at the index given, and fills with the default
 	spliceCol(x)

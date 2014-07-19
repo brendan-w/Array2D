@@ -286,6 +286,7 @@ Array2D.prototype.getRow = function(y) {
 	{
 		array[x] = this[x][y];
 	}
+
 	return array;
 };
 
@@ -299,6 +300,7 @@ Array2D.prototype.getCol = function(x) {
 	{
 		array[y] = this[x][y];
 	}
+	
 	return array;
 };
 
@@ -326,7 +328,7 @@ Array2D.prototype.setCol = function(x, array) {
 	{
 		this[x][y] = array[y];
 	}
-	
+
 	return this;
 };
 

@@ -3,6 +3,8 @@ Array2D
 
 Javascript library for managing 2D arrays
 
+For arrays of more than 2 dimensions, see [ArrayND](https://github.com/brendanwhitfield/ArrayND)
+
 
 Constructors
 ------------

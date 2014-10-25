@@ -12,50 +12,37 @@
 window.Array2D = function() {
 	"use strict";
 
-	/*
-	 * Properties / Settings
-	 */
-
-	var _this = this;
 	this.default_value = 0;
-	console.log(this);
+	var args = arguments; //for brevity, nothing more
 
-	/*
-	 * Constructor
-	 */
-	var construct = function() {
-		this.__assert__totalArgs("constructor", [1,2,3], arguments);
+	this.__assert__.totalArgs.call(this, "constructor", [1,2,3], args);
 
-		switch(arguments.length)
-		{
-			case 1: //copy constructor
-				_this.__assert__typeOf("constructor", arguments[0], Array2D);
+	switch(args.length)
+	{
+		case 1: //copy constructor
+			this.__assert__.typeOf.call(this, "constructor", args[0], Array2D);
 
-				var old = arguments[0];
-				_this.__build__(old.x, old.y, old.default_value);
+			var old = args[0];
+			this.__build__.call(this, old.x, old.y, old.default_value);
 
-				_this.forEach(function(v, x, y, a) {
-					a[x][y] = old[x][y];
-				});
-				break;
+			this.forEach(function(v, x, y, a) {
+				a[x][y] = old[x][y];
+			});
+			break;
 
-			case 2: //normal Array2D constructor
-				_this.__assert__areNumbers("constructor", arguments[0], arguments[1]);
-				_this.__assert__validDimensions("constructor", arguments[0], arguments[1]);
-				_this.__build__(arguments[0], arguments[1], 0);
-				break;
+		case 2: //normal Array2D constructor
+			this.__assert__.areNumbers.call(this, "constructor", args[0], args[1]);
+			this.__assert__.validDimensions.call(this, "constructor", args[0], args[1]);
+			this.__build__(args[0], args[1], 0);
+			break;
 
-			case 3: //normal Array2D constructor, with default value parameter
-				_this.__assert__areNumbers("constructor", arguments[0], arguments[1]);
-				_this.__assert__validDimensions("constructor", arguments[0], arguments[1]);
-				_this.__build__.apply(_this, arguments);
-				break;
-		}
-	};
-
-	//Start
-	construct.apply(this, arguments);
-}; //End constructor
+		case 3: //normal Array2D constructor, with default value parameter
+			this.__assert__.areNumbers.call(this, "constructor", args[0], args[1]);
+			this.__assert__.validDimensions.call(this, "constructor", args[0], args[1]);
+			this.__build__.apply(this, args);
+			break;
+	}
+};
 
 
 
@@ -64,62 +51,65 @@ window.Array2D = function() {
  * Internal functions
  */
 
-Array2D.prototype.__assert__totalArgs = function(sourceName, nums, args) {
-	for(var i = 0; i < nums.length; i++)
-	{
-		if(nums[i] === args.length) { return; }
-	}
-	throw "Array2D Error [" + sourceName + "]: wrong number of arguments";
-};
-
-Array2D.prototype.__assert__areNumbers = function(sourceName) {
-	for(var i = 1; i < arguments.length; i++)
-	{
-		if(isNaN(arguments[i]))
+Array2D.prototype.__assert__ = {
+	totalArgs : function(sourceName, nums, args) {
+		for(var i = 0; i < nums.length; i++)
 		{
-			throw "Array2D Error [" + sourceName + "]: argument not a number";
+			if(nums[i] === args.length) { return; }
 		}
-	}
-};
+		throw "Array2D Error [" + sourceName + "]: wrong number of arguments";
+	},
 
-Array2D.prototype.__assert__isFunction = function(sourceName, callback) {
-	if((callback === undefined) || !(callback instanceof Function))
-	{
-		throw "Array2D Error [" + sourceName + "]: callback is not a function";
-	}
-};
-
-Array2D.prototype.__assert__inBounds = function(sourceName, x, y, w, h) {
-	switch(arguments.length)
-	{
-		case 3:
-			if(!this.inBounds(x, y))
+	areNumbers : function(sourceName) {
+		for(var i = 1; i < arguments.length; i++)
+		{
+			if(isNaN(arguments[i]))
 			{
-				throw "Array2D Error [" + sourceName + "]: array index (" + x + ", " + y + ") out of bounds";
+				throw "Array2D Error [" + sourceName + "]: argument not a number";
 			}
-			break;
-		case 5:
-			if(!this.inBounds(x, y, w, h))
-			{
-				throw "Array2D Error [" + sourceName + "]: rectangular area (" + x + ", " + y + ", " + w + ", " + h + ") out of bounds";
-			}
-			break;
-	}
+		}
+	},
+
+	isFunction : function(sourceName, callback) {
+		if((callback === undefined) || !(callback instanceof Function))
+		{
+			throw "Array2D Error [" + sourceName + "]: callback is not a function";
+		}
+	},
+
+	inBounds : function(sourceName, x, y, w, h) {
+		switch(arguments.length)
+		{
+			case 3:
+				if(!this.inBounds(x, y))
+				{
+					throw "Array2D Error [" + sourceName + "]: array index (" + x + ", " + y + ") out of bounds";
+				}
+				break;
+			case 5:
+				if(!this.inBounds(x, y, w, h))
+				{
+					throw "Array2D Error [" + sourceName + "]: rectangular area (" + x + ", " + y + ", " + w + ", " + h + ") out of bounds";
+				}
+				break;
+		}
+	},
+
+	validDimensions : function(sourceName, x, y) {
+		if((x <= 0) || (y <= 0))
+		{
+			throw "Array2D Error [" + sourceName + "]: can't create array with dimensions (" + x + ", " + y + ")";
+		}
+	},
+
+	typeOf : function(sourceName, obj, type) {
+		if(!(obj instanceof type))
+		{
+			throw "Array2D Error [" + sourceName + "]: parameter must be of type [" + type.name + "]";
+		}
+	},
 };
 
-Array2D.prototype.__assert__validDimensions = function(sourceName, x, y) {
-	if((x <= 0) || (y <= 0))
-	{
-		throw "Array2D Error [" + sourceName + "]: can't create array with dimensions (" + x + ", " + y + ")";
-	}
-};
-
-Array2D.prototype.__assert__typeOf = function(sourceName, obj, type) {
-	if(!(obj instanceof type))
-	{
-		throw "Array2D Error [" + sourceName + "]: parameter must be of type [" + type.name + "]";
-	}
-};
 
 
 
@@ -150,8 +140,8 @@ Array2D.prototype.__build__ = function(nx, ny, def) {
  */
 
 Array2D.prototype.forEach = function(callback) {
-	this.__assert__totalArgs("forEach", [1], arguments);
-	this.__assert__isFunction("forEach", callback);
+	this.__assert__.totalArgs.call(this, "forEach", [1], arguments);
+	this.__assert__.isFunction.call(this, "forEach", callback);
 
 	for(var x = 0; x < this.x; x++)
 	{
@@ -163,10 +153,10 @@ Array2D.prototype.forEach = function(callback) {
 };
 
 Array2D.prototype.forArea = function(x, y, w, h, callback) {
-	this.__assert__totalArgs("forArea", [5], arguments);
-	this.__assert__areNumbers("forArea", x, y, w, h);
-	this.__assert__isFunction("forArea", callback);
-	this.__assert__inBounds("forArea", x, y, w, h);
+	this.__assert__.totalArgs.call(this, "forArea", [5], arguments);
+	this.__assert__.areNumbers.call(this, "forArea", x, y, w, h);
+	this.__assert__.isFunction.call(this, "forArea", callback);
+	this.__assert__.inBounds.call(this, "forArea", x, y, w, h);
 
 	for(var cx = x; cx < x+w; cx++)
 	{
@@ -178,10 +168,10 @@ Array2D.prototype.forArea = function(x, y, w, h, callback) {
 };
 
 Array2D.prototype.forRow = function(y, callback) {
-	this.__assert__totalArgs("forRow", [2], arguments);
-	this.__assert__areNumbers("forRow", y);
-	this.__assert__isFunction("forRow", callback);
-	this.__assert__inBounds("forRow", 0, y);
+	this.__assert__.totalArgs.call(this, "forRow", [2], arguments);
+	this.__assert__.areNumbers.call(this, "forRow", y);
+	this.__assert__.isFunction.call(this, "forRow", callback);
+	this.__assert__.inBounds.call(this, "forRow", 0, y);
 
 	for(var x = 0; x < this.x; x++)
 	{
@@ -190,10 +180,10 @@ Array2D.prototype.forRow = function(y, callback) {
 };
 
 Array2D.prototype.forCol = function(x, callback) {
-	this.__assert__totalArgs("forCol", [2], arguments);
-	this.__assert__areNumbers("forCol", x);
-	this.__assert__isFunction("forCol", callback);
-	this.__assert__inBounds("forCol", x, 0);
+	this.__assert__.totalArgs.call(this, "forCol", [2], arguments);
+	this.__assert__.areNumbers.call(this, "forCol", x);
+	this.__assert__.isFunction.call(this, "forCol", callback);
+	this.__assert__.inBounds.call(this, "forCol", x, 0);
 
 	for(var y = 0; y < this.y; y++)
 	{
@@ -220,8 +210,8 @@ Array2D.prototype.fill = function(value) {
 };
 
 Array2D.prototype.fillArea = function(x, y, w, h, value) {
-	this.__assert__totalArgs("fillArea", [4, 5], arguments);
-	this.__assert__areNumbers("fillArea", x, y, w, h);
+	this.__assert__.totalArgs.call(this, "fillArea", [4, 5], arguments);
+	this.__assert__.areNumbers.call(this, "fillArea", x, y, w, h);
 
 	value = value === undefined ? this.default_value : value;
 
@@ -239,9 +229,9 @@ Array2D.prototype.fillArea = function(x, y, w, h, value) {
 //fillRow(y)
 //fillRow(y, value)
 Array2D.prototype.fillRow = function(y, value) {
-	this.__assert__totalArgs("fillRow", [1, 2], arguments);
-	this.__assert__areNumbers("fillRow", y);
-	this.__assert__inBounds("fillRow", 0, y);
+	this.__assert__.totalArgs.call(this, "fillRow", [1, 2], arguments);
+	this.__assert__.areNumbers.call(this, "fillRow", y);
+	this.__assert__.inBounds.call(this, "fillRow", 0, y);
 
 	value = value === undefined ? this.default_value : value;
 
@@ -256,9 +246,9 @@ Array2D.prototype.fillRow = function(y, value) {
 //fillCol(y)
 //fillCol(y, value)
 Array2D.prototype.fillCol = function(x, value) {
-	this.__assert__totalArgs("fillCol", [1, 2], arguments);
-	this.__assert__areNumbers("fillCol", x);
-	this.__assert__inBounds("fillCol", x, 0);
+	this.__assert__.totalArgs.call(this, "fillCol", [1, 2], arguments);
+	this.__assert__.areNumbers.call(this, "fillCol", x);
+	this.__assert__.inBounds.call(this, "fillCol", x, 0);
 
 	value = value === undefined ? this.default_value : value;
 
@@ -277,9 +267,9 @@ Array2D.prototype.fillCol = function(x, value) {
  */
 
 Array2D.prototype.getRow = function(y) {
-	this.__assert__totalArgs("getRow", [1], arguments);
-	this.__assert__areNumbers("getRow", y);
-	this.__assert__inBounds("getRow", 0, y);
+	this.__assert__.totalArgs.call(this, "getRow", [1], arguments);
+	this.__assert__.areNumbers.call(this, "getRow", y);
+	this.__assert__.inBounds.call(this, "getRow", 0, y);
 
 	var array = [];
 	for(var x = 0; x < this.x; x++)
@@ -291,9 +281,9 @@ Array2D.prototype.getRow = function(y) {
 };
 
 Array2D.prototype.getCol = function(x) {
-	this.__assert__totalArgs("getCol", [1], arguments);
-	this.__assert__areNumbers("getCol", x);
-	this.__assert__inBounds("getCol", x, 0);
+	this.__assert__.totalArgs.call(this, "getCol", [1], arguments);
+	this.__assert__.areNumbers.call(this, "getCol", x);
+	this.__assert__.inBounds.call(this, "getCol", x, 0);
 
 	var array = [];
 	for(var y = 0; y < this.y; y++)
@@ -305,10 +295,10 @@ Array2D.prototype.getCol = function(x) {
 };
 
 Array2D.prototype.setRow = function(y, array) {
-	this.__assert__totalArgs("setRow", [2], arguments);
-	this.__assert__areNumbers("setRow", y);
-	this.__assert__inBounds("setRow", 0, y);
-	this.__assert__typeOf("setRow", array, Array);
+	this.__assert__.totalArgs.call(this, "setRow", [2], arguments);
+	this.__assert__.areNumbers.call(this, "setRow", y);
+	this.__assert__.inBounds.call(this, "setRow", 0, y);
+	this.__assert__.typeOf.call(this, "setRow", array, Array);
 
 	for(var x = 0; (x < this.x) && (x < array.length); x++)
 	{
@@ -319,10 +309,10 @@ Array2D.prototype.setRow = function(y, array) {
 };
 
 Array2D.prototype.setCol = function(x, array) {
-	this.__assert__totalArgs("setCol", [2], arguments);
-	this.__assert__areNumbers("setCol", x);
-	this.__assert__inBounds("setCol", x, 0);
-	this.__assert__typeOf("setCol", array, Array);
+	this.__assert__.totalArgs.call(this, "setCol", [2], arguments);
+	this.__assert__.areNumbers.call(this, "setCol", x);
+	this.__assert__.inBounds.call(this, "setCol", x, 0);
+	this.__assert__.typeOf.call(this, "setCol", array, Array);
 
 	for(var y = 0; (y < this.y) && (y < array.length); y++)
 	{
@@ -333,10 +323,10 @@ Array2D.prototype.setCol = function(x, array) {
 };
 
 Array2D.prototype.swapRow = function(y1, y2) {
-	this.__assert__totalArgs("swapRow", [2], arguments);
-	this.__assert__areNumbers("swapRow", y1, y2);
-	this.__assert__inBounds("swapRow", y1, 0);
-	this.__assert__inBounds("swapRow", y2, 0);
+	this.__assert__.totalArgs.call(this, "swapRow", [2], arguments);
+	this.__assert__.areNumbers.call(this, "swapRow", y1, y2);
+	this.__assert__.inBounds.call(this, "swapRow", y1, 0);
+	this.__assert__.inBounds.call(this, "swapRow", y2, 0);
 
 	if(y1 != y2)
 	{
@@ -352,10 +342,10 @@ Array2D.prototype.swapRow = function(y1, y2) {
 };
 
 Array2D.prototype.swapCol = function(x1, x2) {
-	this.__assert__totalArgs("swapCol", [2], arguments);
-	this.__assert__areNumbers("swapCol", x1, x2);
-	this.__assert__inBounds("swapCol", x1, 0);
-	this.__assert__inBounds("swapCol", x2, 0);
+	this.__assert__.totalArgs.call(this, "swapCol", [2], arguments);
+	this.__assert__.areNumbers.call(this, "swapCol", x1, x2);
+	this.__assert__.inBounds.call(this, "swapCol", x1, 0);
+	this.__assert__.inBounds.call(this, "swapCol", x2, 0);
 
 	if(x1 != x2)
 	{
@@ -370,20 +360,23 @@ Array2D.prototype.swapCol = function(x1, x2) {
 	return this;
 };
 
+/*
+//TODO
 Array2D.prototype.spliceRow = function(array, y) {
-	this.__assert__totalArgs("spliceRow", [2], arguments);
-	this.__assert__areNumbers("spliceRow", y);
-	this.__assert__typeOf("spliceRow", array, Array);
+	this.__assert__.totalArgs.call(this, "spliceRow", [2], arguments);
+	this.__assert__.areNumbers.call(this, "spliceRow", y);
+	this.__assert__.typeOf.call(this, "spliceRow", array, Array);
 	return this;
 };
 
+//TODO
 Array2D.prototype.spliceCol = function(array, x) {
-	this.__assert__totalArgs("spliceCol", [2], arguments);
-	this.__assert__areNumbers("spliceCol", x);
-	this.__assert__typeOf("spliceCol", array, Array);
+	this.__assert__.totalArgs.call(this, "spliceCol", [2], arguments);
+	this.__assert__.areNumbers.call(this, "spliceCol", x);
+	this.__assert__.typeOf.call(this, "spliceCol", array, Array);
 	return this;
 };
-
+*/
 
 
 /*
@@ -395,7 +388,7 @@ Array2D.prototype.spliceCol = function(array, x) {
 //resize(_x, _y, x_)
 //resize(_x, _y, x_, y_)
 Array2D.prototype.resize = function(_x, _y, x_, y_) {
-	this.__assert__totalArgs("resize", [1,2,3,4], arguments);
+	this.__assert__.totalArgs.call(this, "resize", [1,2,3,4], arguments);
 
 	_x = (_x === undefined) || (isNaN(_x)) ? 0 : _x;
 	_y = (_y === undefined) || (isNaN(_y)) ? 0 : _y;
@@ -406,7 +399,7 @@ Array2D.prototype.resize = function(_x, _y, x_, y_) {
 	var nx = this.x + _x + x_;
 	var ny = this.y + _y + y_;
 
-	this.__assert__validDimensions("resize", nx, ny);
+	this.__assert__.validDimensions.call(this, "resize", nx, ny);
 
 	//save a copy of this array, and rebuild for new dimensions
 	var existingData = new Array2D(this);
@@ -427,10 +420,10 @@ Array2D.prototype.resize = function(_x, _y, x_, y_) {
 };
 
 Array2D.prototype.crop = function(x, y, w, h) {
-	this.__assert__totalArgs("crop", [4], arguments);
-	this.__assert__areNumbers("crop", x, y, w, h);
-	this.__assert__inBounds("crop", x, y, w, h);
-	this.__assert__validDimensions("crop", w, h);
+	this.__assert__.totalArgs.call(this, "crop", [4], arguments);
+	this.__assert__.areNumbers.call(this, "crop", x, y, w, h);
+	this.__assert__.inBounds.call(this, "crop", x, y, w, h);
+	this.__assert__.validDimensions.call(this, "crop", w, h);
 
 	this.resize((x+w)-this.x, (y+h)-this.y, -x, -y);
 
@@ -440,8 +433,8 @@ Array2D.prototype.crop = function(x, y, w, h) {
 //shift(x, y)
 //shift(x, y, wrap)
 Array2D.prototype.shift = function(x, y, wrap) {
-	this.__assert__totalArgs("shift", [2,3], arguments);
-	this.__assert__areNumbers("shift", x, y);
+	this.__assert__.totalArgs.call(this, "shift", [2,3], arguments);
+	this.__assert__.areNumbers.call(this, "shift", x, y);
 
 	wrap = (wrap === undefined) || (typeof wrap !== "boolean") ? true : wrap;
 
@@ -456,7 +449,7 @@ Array2D.prototype.shift = function(x, y, wrap) {
 //rotate()
 //rotate(clockwise)
 Array2D.prototype.rotate = function(clockwise) {
-	this.__assert__totalArgs("rotate", [0,1], arguments);
+	this.__assert__.totalArgs.call(this, "rotate", [0,1], arguments);
 
 	clockwise = (clockwise === undefined) || (typeof clockwise !== "boolean") ? true : clockwise;
 
@@ -494,7 +487,7 @@ Array2D.prototype.invertY = function() {
 //inBounds(x, y)
 //inBounds(x, y, w, h)
 Array2D.prototype.inBounds = function(x, y, w, h) {
-	this.__assert__totalArgs("inBounds", [2,4], arguments);
+	this.__assert__.totalArgs.call(this, "inBounds", [2,4], arguments);
 	switch(arguments.length)
 	{
 		case 2:
@@ -507,7 +500,7 @@ Array2D.prototype.inBounds = function(x, y, w, h) {
 //log()
 //log(renderFunction)
 Array2D.prototype.log = function(renderFunction) {
-	this.__assert__totalArgs("log", [0,1], arguments);
+	this.__assert__.totalArgs.call(this, "log", [0,1], arguments);
 
 	if((renderFunction === undefined) || !(renderFunction instanceof Function))
 	{

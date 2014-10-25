@@ -79,11 +79,12 @@ Inverts the array across the X or Y axis.
 
 	setRow(y, array)		//sets the row or column to the contents of the array
 	setCol(x, array)
-
+<!---
 	spliceRow(y)			//creates new row or column at the index given, and fills with the default
 	spliceCol(x)
 	spliceRow(y, array)		//optional array arguments fills with the array's contents
 	spliceCol(x, array)
+-->
 
 	swapRow(y1, y2)			//swaps the specified rows or columns
 	swapCol(x1, x2)

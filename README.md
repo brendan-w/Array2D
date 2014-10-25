@@ -50,27 +50,31 @@ All rectangular area parameters follow the format:
 
 ###2D Operations
 
-	resize(right, bottom, left, top)
 
 Resizes this array by relatively adding or deleting the specified number of rows or columns. Positive numbers add, negative numbers delete. New elements will be filled with the default value.
 
-	crop(x, y, width, height)
+	resize(right, bottom, left, top)
 
 Sets this array to the given rectangular area by deleting elements.
 
-	shift(x, y)
-	shift(x, y, wrap)
+	crop(x, y, width, height)
 
-Shifts the array by the specified number of rows and columns. Negative shifts are welcome. Optional boolean wrap parameter will wrap the elements around the edge. Elements will be wrapped by default.
+Shift the array by the specified number of rows and columns. Negative shifts are welcome. Note: data that has been shifted out of bounds will be lost. New values (on the opposite edge) will be set to the default value.<!---Optional boolean wrap parameter will wrap the elements around the edge. Elements will be wrapped by default.-->
+
+	shift(x, y)
+<!---
+	shift(x, y, wrap)
+-->
+
+Rotate the array 90 degrees in the specified direction.
 
 	rotate(clockwise)
 
-Rotates the array 90 degrees in the specified direction.
+Inverts the array across the X or Y axis.
 
 	invertX()
 	invertY()
 
-Inverts the array across the X or Y axis.
 
 ###Row and Column Operations
 
@@ -85,7 +89,7 @@ Inverts the array across the X or Y axis.
 	spliceRow(y, array)		//optional array arguments fills with the array's contents
 	spliceCol(x, array)
 -->
-
+	
 	swapRow(y1, y2)			//swaps the specified rows or columns
 	swapCol(x1, x2)
 

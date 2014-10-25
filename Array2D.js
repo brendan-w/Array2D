@@ -1,7 +1,6 @@
 //Written by Brendan Whitfield
 
 
-"use strict";
 
 
 /*
@@ -10,7 +9,8 @@
  * new Array2D(<Array2D>);
  * new Array2D(<x>, <y>;)
  */
-var Array2D = function() {
+window.Array2D = function() {
+	"use strict";
 
 	/*
 	 * Properties / Settings
@@ -247,7 +247,7 @@ Array2D.prototype.fillRow = function(y, value) {
 
 	for(var x = 0; x < this.x; x++)
 	{
-		this[x][y] = array[x];
+		this[x][y] = value;
 	}
 
 	return this;
@@ -264,7 +264,7 @@ Array2D.prototype.fillCol = function(x, value) {
 
 	for(var y = 0; y < this.y; y++)
 	{
-		this[x][y] = array[y];
+		this[x][y] = value;
 	}
 
 	return this;
@@ -281,7 +281,7 @@ Array2D.prototype.getRow = function(y) {
 	this.__assert__areNumbers("getRow", y);
 	this.__assert__inBounds("getRow", 0, y);
 
-	var array = new Array();
+	var array = [];
 	for(var x = 0; x < this.x; x++)
 	{
 		array[x] = this[x][y];
@@ -295,7 +295,7 @@ Array2D.prototype.getCol = function(x) {
 	this.__assert__areNumbers("getCol", x);
 	this.__assert__inBounds("getCol", x, 0);
 
-	var array = new Array();
+	var array = [];
 	for(var y = 0; y < this.y; y++)
 	{
 		array[y] = this[x][y];
@@ -349,7 +349,7 @@ Array2D.prototype.swapRow = function(y1, y2) {
 	}
 
 	return this;
-},
+};
 
 Array2D.prototype.swapCol = function(x1, x2) {
 	this.__assert__totalArgs("swapCol", [2], arguments);
@@ -368,7 +368,7 @@ Array2D.prototype.swapCol = function(x1, x2) {
 	}
 
 	return this;
-},
+};
 
 Array2D.prototype.spliceRow = function(array, y) {
 	this.__assert__totalArgs("spliceRow", [2], arguments);
@@ -499,10 +499,8 @@ Array2D.prototype.inBounds = function(x, y, w, h) {
 	{
 		case 2:
 			return (x >= 0) && (x < this.x) && (y >= 0) && (y < this.y);
-			break;
 		case 4:
 			return this.inBounds(x, y) && this.inBounds(x+w-1, y+h-1);
-			break;
 	}
 };
 

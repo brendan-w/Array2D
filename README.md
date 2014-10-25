@@ -51,11 +51,11 @@ All rectangular area parameters follow the format:
 ###2D Operations
 
 
-Resizes this array by relatively adding or deleting the specified number of rows or columns. Positive numbers add, negative numbers delete. New elements will be filled with the default value.
+Resize the array by relatively adding or deleting the specified number of rows or columns. Positive numbers add, negative numbers delete. New elements will be filled with the default value.
 
 	resize(right, bottom, left, top)
 
-Sets this array to the given rectangular area by deleting elements.
+Reduce the array to the given rectangular area by deleting elements.
 
 	crop(x, y, width, height)
 
@@ -83,18 +83,18 @@ Inverts the array across the X or Y axis.
 
 	setRow(y, array)		//sets the row or column to the contents of the array
 	setCol(x, array)
-<!---
-	spliceRow(y)			//creates new row or column at the index given, and fills with the default
-	spliceCol(x)
-	spliceRow(y, array)		//optional array arguments fills with the array's contents
-	spliceCol(x, array)
--->
 	
 	swapRow(y1, y2)			//swaps the specified rows or columns
 	swapCol(x1, x2)
 
 	deleteRow(y)			//deletes the specified row or column
 	deleteCol(x)
+<!---
+	spliceRow(y)			//creates new row or column at the index given, and fills with the default
+	spliceCol(x)
+	spliceRow(y, array)		//optional array arguments fills with the array's contents
+	spliceCol(x, array)
+-->
 
 ###Debug & Misc
 
